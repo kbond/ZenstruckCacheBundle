@@ -1,0 +1,21 @@
+{
+    "name": "zenstruck/cache-bundle",
+    "description": "Provides a httpcache warmup command for Symfony2",
+    "keywords": ["cache", "caching", "httpcache"],
+    "homepage": "http://zenstruck.com/project/ZenstruckCacheBundle",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kevin Bond",
+            "email": "kevinbond@gmail.com"
+        }
+    ],
+    "require": {
+        "symfony/framework-bundle" : "2.*"
+    },
+    "autoload": {
+        "psr-0": { "Zenstruck\\Bundle\\CacheBundle": "" }
+    },
+    "target-dir": "Zenstruck/Bundle/CacheBundle"
+}
