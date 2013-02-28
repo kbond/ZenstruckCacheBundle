@@ -2,21 +2,23 @@
 
 namespace Zenstruck\Bundle\CacheBundle\HttpCache;
 
+use Zenstruck\Bundle\CacheBundle\HttpCache\Provider\UrlProviderInterface;
+
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-class WarmupRegistry
+class UrlRegistry
 {
-    /** @var WarmupProviderInterface[] */
+    /** @var UrlProviderInterface[] */
     protected $providers = array();
 
-    public function addProvider(WarmupProviderInterface $provider)
+    public function addProvider(UrlProviderInterface $provider)
     {
         $this->providers[] = $provider;
     }
 
     /**
-     * @return WarmupProviderInterface[]
+     * @return UrlProviderInterface[]
      */
     public function getProviders()
     {

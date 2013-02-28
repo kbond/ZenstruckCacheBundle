@@ -1,11 +1,11 @@
 <?php
 
-namespace Zenstruck\Bundle\CacheBundle\HttpCache;
+namespace Zenstruck\Bundle\CacheBundle\HttpCache\Provider;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-abstract class AbstractWarmupProvider implements WarmupProviderInterface
+abstract class AbstractUrlProvider implements UrlProviderInterface
 {
     protected function addPathToHost($path, $host)
     {

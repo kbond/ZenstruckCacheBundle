@@ -2,6 +2,7 @@
 
 namespace Zenstruck\Bundle\CacheBundle\Command;
 
+use Buzz\Browser;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -29,8 +30,11 @@ EOF
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /** @var $registry \Zenstruck\Bundle\CacheBundle\HttpCache\WarmupRegistry */
-        $registry = $this->getContainer()->get('zenstruck_cache.warmup_registry');
+        /** @var $registry \Zenstruck\Bundle\CacheBundle\HttpCache\UrlRegistry */
+        $registry = $this->getContainer()->get('zenstruck_cache.url_registry');
+
+        /** @var $buzz Browser */
+        $buzz = $this->getContainer()->get('buzz');
 
         if (!count($registry->getProviders())) {
             $output->writeln('No providers registered.');
@@ -53,12 +57,10 @@ EOF
         }
 
         foreach ($urls as $url) {
-            $http = curl_init($url);
-            curl_setopt($http, CURLOPT_RETURNTRANSFER, 1);
-            curl_exec($http);
+            $response = $buzz->get($url);
 
             if ($input->getOption('verbose')) {
-                $output->writeln($url);
+                $output->writeln(sprintf('%s - %s', $response->getStatusCode(), $url));
             } else {
                 if ($progress) {
                     $progress->advance();

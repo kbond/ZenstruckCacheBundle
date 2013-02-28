@@ -2,7 +2,7 @@
 
 namespace Zenstruck\Bundle\CacheBundle\Tests\HttpCache;
 
-use Zenstruck\Bundle\CacheBundle\HttpCache\WarmupRegistry;
+use Zenstruck\Bundle\CacheBundle\HttpCache\UrlRegistry;
 use Zenstruck\Bundle\CacheBundle\Tests\Fixtures\TestProvider1;
 use Zenstruck\Bundle\CacheBundle\Tests\Fixtures\TestProvider2;
 
@@ -13,7 +13,7 @@ class WarmupRegistryTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetUrls()
     {
-        $registry = new WarmupRegistry();
+        $registry = new UrlRegistry();
         $registry->addProvider(new TestProvider1());
         $registry->addProvider(new TestProvider2());
 

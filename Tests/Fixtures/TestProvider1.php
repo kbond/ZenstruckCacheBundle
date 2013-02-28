@@ -2,12 +2,12 @@
 
 namespace Zenstruck\Bundle\CacheBundle\Tests\Fixtures;
 
-use Zenstruck\Bundle\CacheBundle\HttpCache\WarmupProviderInterface;
+use Zenstruck\Bundle\CacheBundle\HttpCache\Provider\UrlProviderInterface;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-class TestProvider1 implements WarmupProviderInterface
+class TestProvider1 implements UrlProviderInterface
 {
     public function getUrls($host = null)
     {

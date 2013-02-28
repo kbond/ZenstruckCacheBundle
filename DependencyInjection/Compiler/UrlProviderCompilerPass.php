@@ -9,23 +9,23 @@ use Symfony\Component\DependencyInjection\Reference;
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-class WarmupProviderCompilerPass implements CompilerPassInterface
+class UrlProviderCompilerPass implements CompilerPassInterface
 {
     /**
      * {@inheritDoc}
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('zenstruck_cache.warmup_registry')) {
+        if (!$container->hasDefinition('zenstruck_cache.url_registry')) {
             return;
         }
 
         $definition = $container->getDefinition(
-            'zenstruck_cache.warmup_registry'
+            'zenstruck_cache.url_registry'
         );
 
         $taggedServices = $container->findTaggedServiceIds(
-            'zenstruck_cache.warmup_provider'
+            'zenstruck_cache.url_provider'
         );
 
         foreach ($taggedServices as $id => $attributes) {

@@ -1,11 +1,11 @@
 <?php
 
-namespace Zenstruck\Bundle\CacheBundle\HttpCache;
+namespace Zenstruck\Bundle\CacheBundle\HttpCache\Provider;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-interface WarmupProviderInterface
+interface UrlProviderInterface
 {
     /**
      * @param string $host

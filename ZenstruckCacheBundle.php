@@ -4,7 +4,7 @@ namespace Zenstruck\Bundle\CacheBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Zenstruck\Bundle\CacheBundle\DependencyInjection\Compiler\WarmupProviderCompilerPass;
+use Zenstruck\Bundle\CacheBundle\DependencyInjection\Compiler\UrlProviderCompilerPass;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
@@ -15,6 +15,6 @@ class ZenstruckCacheBundle extends Bundle
     {
         parent::build($container);
 
-        $container->addCompilerPass(new WarmupProviderCompilerPass());
+        $container->addCompilerPass(new UrlProviderCompilerPass());
     }
 }
