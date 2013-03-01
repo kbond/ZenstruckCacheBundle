@@ -15,7 +15,7 @@ One or more url providers must be registered.
     }
     ```
 
-2. Register the bundle with Symfony2:
+2. Register this bundle as well as the required `SensioBuzzBundle` with Symfony2:
 
     ```php
     // app/AppKernel.php
@@ -24,6 +24,7 @@ One or more url providers must be registered.
     {
         $bundles = array(
             // ...
+            new Sensio\Bundle\BuzzBundle\SensioBuzzBundle(),
             new Zenstruck\Bundle\CacheBundle\ZenstruckCacheBundle(),
         );
         // ...
@@ -41,6 +42,8 @@ Arguments:
 
 Help:
  The zenstruck:http-cache:warmup command warms up the http cache.
+
+ Use the -verbose flag to see the urls that are being warmed.
 ```
 
 ## Sitemap Provider

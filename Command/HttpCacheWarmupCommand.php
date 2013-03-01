@@ -23,6 +23,8 @@ class HttpCacheWarmupCommand extends ContainerAwareCommand
             ->setDescription('Warms up an http cache')
             ->setHelp(<<<EOF
 The <info>%command.name%</info> command warms up the http cache.
+
+Use the -verbose flag to see the urls that are being warmed.
 EOF
         )
         ;
@@ -61,12 +63,8 @@ EOF
 
             if ($input->getOption('verbose')) {
                 $output->writeln(sprintf('%s - %s', $response->getStatusCode(), $url));
-            } else {
-                if ($progress) {
-                    $progress->advance();
-                } else {
-                    $output->write('.');
-                }
+            } else if ($progress) {
+                $progress->advance();
             }
         }
 
