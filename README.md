@@ -35,15 +35,16 @@ One or more url providers must be registered.
 
 ```
 Usage:
- zenstruck:http-cache:warmup [host]
+ zenstruck:http-cache:warmup [-f|--format="..."] [host]
 
 Arguments:
- host  The full host - ie http://www.google.com
+ host                  The full host - ie http://www.google.com
+
+Options:
+ --format (-f)         progress|quiet|verbose (default: "progress")
 
 Help:
  The zenstruck:http-cache:warmup command warms up the http cache.
-
- Use the -verbose flag to see the urls that are being warmed.
 ```
 
 ## Sitemap Provider
