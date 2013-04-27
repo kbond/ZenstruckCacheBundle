@@ -3,6 +3,8 @@
 namespace Zenstruck\Bundle\CacheBundle\Command;
 
 use Buzz\Browser;
+use Buzz\Exception\ClientException;
+use Buzz\Message\Response;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -64,10 +66,19 @@ EOF
         }
 
         foreach ($urls as $url) {
-            $response = $buzz->get($url);
 
-            if ('verbose' === $format) {
-                $output->writeln(sprintf('%s - %s', $response->getStatusCode(), $url));
+            try {
+                /** @var Response $response */
+                $response = $buzz->get($url);
+            } catch (ClientException $e) {
+                $output->writeln(sprintf('ERROR - %s - Message: %s', $url, $e->getMessage()));
+                continue;
+            }
+
+            $statusCode = $response->getStatusCode();
+
+            if (200 !== $statusCode || 'verbose' === $format) {
+                $output->writeln(sprintf('%s - %s', $statusCode, $url));
             } elseif ($progress) {
                 $progress->advance();
             } elseif ('progress' === $format) {
