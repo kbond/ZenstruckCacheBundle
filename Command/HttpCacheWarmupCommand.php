@@ -22,7 +22,8 @@ class HttpCacheWarmupCommand extends ContainerAwareCommand
             ->setName('zenstruck:http-cache:warmup')
             ->setDefinition(array(
                 new InputArgument('host', InputArgument::OPTIONAL, 'The full host - ie http://www.google.com'),
-                new InputOption('format', 'f', InputOption::VALUE_REQUIRED, 'progress|quiet|verbose', 'progress')
+                new InputOption('format', 'f', InputOption::VALUE_REQUIRED, 'progress|quiet|verbose', 'progress'),
+                new InputOption('timeout', null, InputOption::VALUE_REQUIRED, 'progress|quiet|verbose', '5')
             ))
             ->setDescription('Warms up an http cache')
             ->setHelp(<<<EOF
@@ -39,6 +40,7 @@ EOF
 
         /** @var $buzz Browser */
         $buzz = $this->getContainer()->get('buzz');
+        $buzz->getClient()->setTimeout((int) $input->getOption('timeout'));
 
         if (!count($registry->getProviders())) {
             $output->writeln('No providers registered.');
