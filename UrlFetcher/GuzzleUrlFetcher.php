@@ -2,7 +2,7 @@
 
 namespace Zenstruck\Bundle\CacheBundle\UrlFetcher;
 
-use Guzzle\Http\StaticClient as Guzzle;
+use Guzzle\Http\Client;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -10,20 +10,24 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class GuzzleUrlFetcher implements UrlFetcherInterface
 {
-    protected $params = array(
-        'exceptions' => false
-    );
+    protected $client;
+
+    public function __construct()
+    {
+        $this->client = new Client();
+        $this->client->getConfig()->setPath('request.options/exceptions', false);
+    }
 
     public function fetch($url)
     {
-        $response = Guzzle::get($url, $this->params);
+        $response = $this->client->get($url)->send();
 
         return new Response($response->getBody(true), $response->getStatusCode());
     }
 
     public function setTimeout($seconds)
     {
-        $this->params['timeout'] = $seconds;
+        $this->client->getConfig()->setPath('request.options/timeout', $seconds);
     }
 
 }
