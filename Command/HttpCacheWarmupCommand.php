@@ -39,6 +39,7 @@ EOF
 
         /** @var UrlFetcherInterface $urlFetcher */
         $urlFetcher = $this->getContainer()->get('zenstruck_cache.url_fetcher');
+        $urlFetcher->setTimeout($input->getOption('timeout'));
 
         if (!count($registry->getProviders())) {
             $output->writeln('No providers registered.');
