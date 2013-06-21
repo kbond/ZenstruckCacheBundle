@@ -22,6 +22,14 @@ class ZenstruckCacheExtension extends Extension
 
         $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
 
+        if (class_exists('\Guzzle\Http\Client')) {
+            $loader->load('guzzle_url_fetcher.xml');
+        } elseif (class_exists('\Buzz\Browser')) {
+            $loader->load('buzz_url_fetcher.xml');
+        } else {
+            throw new \Exception('Either Guzzle or Buzz must be available to use ZenstruckCacheBundle.');
+        }
+
         $loader->load('url_registry.xml');
 
         if ($config['sitemap_provider']) {

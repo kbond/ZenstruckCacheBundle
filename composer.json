@@ -12,13 +12,18 @@
         }
     ],
     "require": {
-        "symfony/symfony" : "2.*",
-        "sensio/buzz-bundle": "~0.2"
+        "symfony/symfony" : "2.*"
+    },
+    "require-dev": {
+        "kriswallsmith/buzz": ">= 0.6",
+        "guzzle/http": "*"
     },
     "autoload": {
         "psr-0": { "Zenstruck\\Bundle\\CacheBundle": "" }
     },
     "suggest": {
+        "kriswallsmith/buzz": "To use Buzz to fetch urls",
+        "guzzle/http": "To use Guzzle to fetch urls",
         "dpn/xml-sitemap-bundle": "Create a sitemap with Symfony"
     },
     "target-dir": "Zenstruck/Bundle/CacheBundle"

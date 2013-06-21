@@ -2,19 +2,19 @@
 
 namespace Zenstruck\Bundle\CacheBundle\HttpCache\Provider;
 
-use Buzz\Browser;
 use Symfony\Component\DomCrawler\Crawler;
+use Zenstruck\Bundle\CacheBundle\UrlFetcher\UrlFetcherInterface;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
 class SitemapUrlProvider extends AbstractUrlProvider
 {
-    protected $buzz;
+    protected $urlFetcher;
 
-    public function __construct(Browser $buzz)
+    public function __construct(UrlFetcherInterface $urlFetcher)
     {
-        $this->buzz = $buzz;
+        $this->urlFetcher = $urlFetcher;
     }
 
     public function getUrls($host = null)
@@ -48,7 +48,7 @@ class SitemapUrlProvider extends AbstractUrlProvider
      */
     protected function getSitemapEntries($url)
     {
-        $response = $this->buzz->get($url);
+        $response = $this->urlFetcher->fetch($url);
 
         if ($response->isSuccessful()) {
             $crawler = new Crawler($response->getContent());

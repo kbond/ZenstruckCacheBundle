@@ -10,7 +10,7 @@
 
     <services>
         <service id="zenstruck_cache.sitemap_provider" class="%zenstruck_cache.sitemap_provider.class%" public="false">
-            <argument type="service" id="buzz" />
+            <argument type="service" id="zenstruck_cache.url_fetcher" />
             <tag name="zenstruck_cache.url_provider" />
         </service>
     </services>

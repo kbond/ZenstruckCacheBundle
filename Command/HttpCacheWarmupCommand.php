@@ -2,14 +2,13 @@
 
 namespace Zenstruck\Bundle\CacheBundle\Command;
 
-use Buzz\Browser;
-use Buzz\Exception\ClientException;
-use Buzz\Message\Response;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Zenstruck\Bundle\CacheBundle\Exception\UrlFetcherException;
+use Zenstruck\Bundle\CacheBundle\UrlFetcher\UrlFetcherInterface;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
@@ -38,9 +37,8 @@ EOF
         /** @var $registry \Zenstruck\Bundle\CacheBundle\HttpCache\UrlRegistry */
         $registry = $this->getContainer()->get('zenstruck_cache.url_registry');
 
-        /** @var $buzz Browser */
-        $buzz = $this->getContainer()->get('buzz');
-        $buzz->getClient()->setTimeout((int) $input->getOption('timeout'));
+        /** @var UrlFetcherInterface $urlFetcher */
+        $urlFetcher = $this->getContainer()->get('zenstruck_cache.url_fetcher');
 
         if (!count($registry->getProviders())) {
             $output->writeln('No providers registered.');
@@ -68,11 +66,9 @@ EOF
         }
 
         foreach ($urls as $url) {
-
             try {
-                /** @var Response $response */
-                $response = $buzz->get($url);
-            } catch (ClientException $e) {
+                $response = $urlFetcher->fetch($url);
+            } catch (UrlFetcherException $e) {
                 $output->writeln(sprintf('ERROR - %s - Message: %s', $url, $e->getMessage()));
                 continue;
             }
