@@ -26,5 +26,10 @@
         "guzzle/http": "To use Guzzle to fetch urls",
         "dpn/xml-sitemap-bundle": "Create a sitemap with Symfony"
     },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.x-dev"
+        }
+    },
     "target-dir": "Zenstruck/Bundle/CacheBundle"
 }
