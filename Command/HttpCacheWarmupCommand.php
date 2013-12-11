@@ -43,6 +43,7 @@ EOF
 
         if (!count($registry->getProviders())) {
             $output->writeln('No providers registered.');
+
             return;
         }
 
@@ -51,11 +52,13 @@ EOF
 
         if (!in_array($format, array('progress', 'quiet', 'verbose'))) {
             $output->writeln(sprintf('"%s" is an invalid format.', $format));
+
             return;
         }
 
         if (!count($urls)) {
             $output->writeln('No urls provided.');
+
             return;
         }
 
