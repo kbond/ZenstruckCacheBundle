@@ -3,6 +3,7 @@
 namespace Zenstruck\Bundle\CacheBundle\HttpCache\Provider;
 
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpKernel\Kernel;
 use Zenstruck\Bundle\CacheBundle\UrlFetcher\UrlFetcherInterface;
 
 /**
@@ -54,7 +55,14 @@ class SitemapUrlProvider extends AbstractUrlProvider
             $crawler = new Crawler($response->getContent());
             $ret = array();
 
-            foreach ($crawler->filter('loc') as $node) {
+            if (version_compare(Kernel::VERSION, '2.4.0', '<')) {
+                $nodes = $crawler->filter('loc');
+            } else {
+                // Symfony 2.4+ requires xml namespaces
+                $nodes = $crawler->filter('default|loc');
+            }
+
+            foreach ($nodes as $node) {
                 $ret[] = $node->nodeValue;
             }
 
