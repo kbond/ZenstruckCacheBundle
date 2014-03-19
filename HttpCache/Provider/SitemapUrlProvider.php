@@ -54,13 +54,14 @@ class SitemapUrlProvider extends AbstractUrlProvider
         if ($response->isSuccessful()) {
             $crawler = new Crawler($response->getContent());
             $ret = array();
+            $filter = 'loc';
 
-            if (version_compare(Kernel::VERSION, '2.4.0', '<')) {
-                $nodes = $crawler->filter('loc');
-            } else {
+            if (version_compare(Kernel::VERSION, '2.4.0', '>=') && preg_match('/xmlns:/', $response->getContent())) {
                 // Symfony 2.4+ requires xml namespaces
-                $nodes = $crawler->filter('default|loc');
+                $filter = 'default|loc';
             }
+
+            $nodes = $crawler->filter($filter);
 
             foreach ($nodes as $node) {
                 $ret[] = $node->nodeValue;
