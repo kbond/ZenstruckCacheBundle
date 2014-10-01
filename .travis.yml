@@ -10,3 +10,9 @@ php:
 before_script:
   - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "5.3" ]; then composer require --no-update guzzlehttp/guzzle:~4.0; fi;'
   - composer install --prefer-source
+
+script: phpunit --coverage-clover=coverage.clover
+
+after_script:
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
