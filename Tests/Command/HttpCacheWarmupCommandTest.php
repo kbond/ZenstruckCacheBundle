@@ -19,28 +19,26 @@ class HttpCacheWarmupCommandTest extends \PHPUnit_Framework_TestCase
         $provider
             ->expects($this->once())
             ->method('count')
-            ->will($this->returnValue(3))
-        ;
+            ->will($this->returnValue(3));
         $provider
             ->expects($this->once())
             ->method('getUrls')
-            ->willReturn(array('http://foo.com', 'http://bar.com', 'http://baz.com'))
-        ;
+            ->willReturn(array('http://foo.com', 'http://bar.com', 'http://baz.com'));
 
         $client = $this->getMock('Zenstruck\CacheBundle\Http\Client');
         $client
             ->expects($this->once())
             ->method('fetchMulti')
             ->with(array('http://foo.com', 'http://bar.com', 'http://baz.com'))
-            ->will($this->returnValue(
+            ->will(
+                $this->returnValue(
                     array(
                         new Response('http://foo.com', '', 200),
                         new Response('http://bar.com', '', 404),
                         new Response('http://baz.com', '', 200),
                     )
                 )
-            )
-        ;
+            );
 
         $crawler = new Crawler($client, array($provider));
 
@@ -68,8 +66,7 @@ class HttpCacheWarmupCommandTest extends \PHPUnit_Framework_TestCase
         $crawler
             ->expects($this->once())
             ->method('count')
-            ->will($this->returnValue(0))
-        ;
+            ->will($this->returnValue(0));
 
         $application = new Application();
         $application->add(new HttpCacheWarmupCommand($crawler));

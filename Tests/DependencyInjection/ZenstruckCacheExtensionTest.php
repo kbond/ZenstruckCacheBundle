@@ -22,7 +22,8 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
 
     public function testWithHost()
     {
-        $this->load(array(
+        $this->load(
+            array(
                 'sitemap_provider' => array(
                     'host' => 'http://www.example.com'
                 )
@@ -40,7 +41,8 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
      */
     public function testMissingHost()
     {
-        $this->load(array(
+        $this->load(
+            array(
                 'sitemap_provider' => array(
                     'host' => null
                 )

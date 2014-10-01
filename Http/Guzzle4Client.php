@@ -56,7 +56,9 @@ class Guzzle4Client implements Client
             $requests[] = $this->createRequest($url, $followRedirects, $timeout);
         }
 
-        $this->guzzleClient->sendAll($requests, [
+        $this->guzzleClient->sendAll(
+            $requests,
+            [
                 'complete' => function (CompleteEvent $event) use (&$responses) {
                     $responses[] = $this->createResponse($event->getResponse());
                 },
@@ -71,7 +73,10 @@ class Guzzle4Client implements Client
 
     private function createRequest($url, $followRedirects = false, $timeout = 10)
     {
-        return $this->guzzleClient->createRequest('GET', $url, [
+        return $this->guzzleClient->createRequest(
+            'GET',
+            $url,
+            [
                 'timeout' => $timeout,
                 'allow_redirects' => $followRedirects
             ]
@@ -87,8 +92,8 @@ class Guzzle4Client implements Client
     {
         return new Response(
             $guzzleResponse->getEffectiveUrl(),
-            (string) $guzzleResponse->getBody(),
-            (int) $guzzleResponse->getStatusCode(),
+            (string)$guzzleResponse->getBody(),
+            (int)$guzzleResponse->getStatusCode(),
             $guzzleResponse->getHeaders()
         );
     }

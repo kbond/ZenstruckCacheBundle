@@ -20,5 +20,4 @@ class ZenstruckCacheBundle extends Bundle
 
         $container->addCompilerPass(new UrlProviderCompilerPass());
     }
-
 }
