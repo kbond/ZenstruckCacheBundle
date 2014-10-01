@@ -7,15 +7,11 @@ One or more url providers must be registered.
 
 1. Add to your `composer.json`:
 
-    ```json
-    {
-        "require": {
-            "zenstruck/cache-bundle": "*"
-        }
-    }
+    ```
+    $ composer require zenstruck/cache-bundle
     ```
 
-2. Register this bundle as well as the required `SensioBuzzBundle` with Symfony2:
+2. Register this bundle with Symfony2:
 
     ```php
     // app/AppKernel.php
@@ -24,8 +20,7 @@ One or more url providers must be registered.
     {
         $bundles = array(
             // ...
-            new Sensio\Bundle\BuzzBundle\SensioBuzzBundle(),
-            new Zenstruck\Bundle\CacheBundle\ZenstruckCacheBundle(),
+            new Zenstruck\CacheBundle\ZenstruckCacheBundle(),
         );
         // ...
     }
@@ -35,13 +30,12 @@ One or more url providers must be registered.
 
 ```
 Usage:
- zenstruck:http-cache:warmup [-f|--format="..."] [host]
-
-Arguments:
- host                  The full host - ie http://www.google.com
+ zenstruck:http-cache:warmup [-p|--parallel-requests="..."] [-t|--timeout="..."] [-r|--follow-redirects]
 
 Options:
- --format (-f)         progress|quiet|verbose (default: "progress")
+ --parallel-requests (-p) The number of requests to send in parallel (default: "10")
+ --timeout (-t)           The timeout in seconds (default: "10")
+ --follow-redirects (-r)  Follow redirects?
 
 Help:
  The zenstruck:http-cache:warmup command warms up the http cache.
@@ -53,40 +47,41 @@ This bundle comes with URL provider that looks at a site's `sitemap.xml` to retr
 first looks for a `sitemap_index.xml` to find a set of sitemap files.  If no index is found, it defaults to using
 `sitemap.xml`.
 
-See http://www.sitemaps.org/ for information on how to create a sitemap.
+* See http://www.sitemaps.org/ for information on how to create a sitemap.
+* See [DpnXmlSitemapBundle](https://github.com/bjo3rnf/DpnXmlSitemapBundle) for creating a sitemap with Symfony2.
 
-See [DpnXmlSitemapBundle](https://github.com/dreipunktnull/DpnXmlSitemapBundle) for creating a sitemap with Symfony2.
+To enable the sitemap provider, configure it in your `config.yml`:
 
-### Usage
+```yaml
+zenstruck_cache:
+    sitemap_provider:
+        host: http://www.example.com
+```
 
-1. Enable the provider in your `config.yml`:
+## Add a Custom URL Provider
 
-    ```yaml
-    zenstruck_cache:
-        sitemap_provider:     true
-    ```
-
-2. Run the command - make sure the host argument is set.
-
-    ```
-    $ php app/console zenstruck:http-cache:warmup http://www.example.com
-    ```
-
-## Add a Warmup URL Provider
-
-1. Create a class that implements `Zenstruck\Bundle\CacheBundle\HttpCache\UrlProviderInterface`:
+1. Create a class that implements `Zenstruck\CacheBundle\UrlProvider\UrlProvider`:
 
     ```php
-    class MyWarmupProvider implements UrlProviderInterface
+    use Zenstruck\CacheBundle\UrlProvider\UrlProvider;
+
+    namespace Acme;
+
+    class MyUrlProvider implements UrlProvider
     {
-       public function getUrls($host = null)
-       {
-           $urls = array();
+        public function getUrls()
+        {
+            $urls = array();
 
-           // fetch from a datasource
+            // fetch from a datasource
 
-           return $urls;
-       }
+            return $urls;
+        }
+
+        public function count()
+        {
+            return count($this->getUrls());
+        }
     }
     ```
 
@@ -94,14 +89,16 @@ See [DpnXmlSitemapBundle](https://github.com/dreipunktnull/DpnXmlSitemapBundle) 
 
     ```yaml
     my_url_provider:
-            class: Acme\DemoBundle\HttpCache\MyWarmupProvider
-            tags:
-                - { name: zenstruck_cache.url_provider }
+        class: Acme\MyUrlProvider
+        tags:
+            - { name: zenstruck_cache.url_provider }
     ```
 
 ## Full Default Config
 
 ```yaml
 zenstruck_cache:
-    sitemap_provider:     false
+    sitemap_provider:
+        enabled:              false
+        host:                 ~ # Required
 ```

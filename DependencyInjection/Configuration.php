@@ -1,6 +1,6 @@
 <?php
 
-namespace Zenstruck\Bundle\CacheBundle\DependencyInjection;
+namespace Zenstruck\CacheBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -17,7 +17,12 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->booleanNode('sitemap_provider')->defaultFalse()->end()
+                ->arrayNode('sitemap_provider')
+                    ->canBeEnabled()
+                    ->children()
+                        ->scalarNode('host')->isRequired()->cannotBeEmpty()->end()
+                    ->end()
+                ->end()
             ->end()
         ;
 

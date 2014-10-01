@@ -12,24 +12,31 @@
         }
     ],
     "require": {
-        "symfony/symfony" : "~2.1"
+        "symfony/http-foundation": "~2.5",
+        "symfony/http-kernel": "~2.5",
+        "symfony/console": "~2.5",
+        "symfony/config": "~2.5",
+        "symfony/dependency-injection": "~2.5"
     },
     "require-dev": {
-        "kriswallsmith/buzz": ">= 0.6",
-        "guzzle/http": "*"
+        "symfony/dom-crawler": "~2.5",
+        "symfony/css-selector": "~2.5",
+        "guzzle/http": "~3.0",
+        "guzzle/plugin-mock": "~3.0",
+        "matthiasnoback/symfony-dependency-injection-test": "~0.4"
     },
     "autoload": {
-        "psr-0": { "Zenstruck\\Bundle\\CacheBundle": "" }
+        "psr-0": { "Zenstruck\\CacheBundle": "" }
     },
     "suggest": {
-        "kriswallsmith/buzz": "To use Buzz to fetch urls",
-        "guzzle/http": "To use Guzzle to fetch urls",
+        "guzzle/http": "To use Guzzle3 to fetch urls",
+        "guzzlehttp/guzzle": "To use Guzzle4 to fetch urls",
         "dpn/xml-sitemap-bundle": "Create a sitemap with Symfony"
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.x-dev"
+            "dev-master": "2.x-dev"
         }
     },
-    "target-dir": "Zenstruck/Bundle/CacheBundle"
+    "target-dir": "Zenstruck/CacheBundle"
 }

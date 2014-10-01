@@ -1,6 +1,6 @@
 <?php
 
-namespace Zenstruck\Bundle\CacheBundle\DependencyInjection\Compiler;
+namespace Zenstruck\CacheBundle\DependencyInjection\Compiler;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -12,24 +12,19 @@ use Symfony\Component\DependencyInjection\Reference;
 class UrlProviderCompilerPass implements CompilerPassInterface
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->hasDefinition('zenstruck_cache.url_registry')) {
+        if (!$container->hasDefinition('zenstruck_cache.crawler')) {
             return;
         }
 
-        $definition = $container->getDefinition(
-            'zenstruck_cache.url_registry'
-        );
-
-        $taggedServices = $container->findTaggedServiceIds(
-            'zenstruck_cache.url_provider'
-        );
+        $definition = $container->getDefinition('zenstruck_cache.crawler');
+        $taggedServices = $container->findTaggedServiceIds('zenstruck_cache.url_provider');
 
         foreach ($taggedServices as $id => $attributes) {
-            $definition->addMethodCall('addProvider', array(new Reference($id)));
+            $definition->addMethodCall('addUrlProvider', array(new Reference($id)));
         }
     }
 }
