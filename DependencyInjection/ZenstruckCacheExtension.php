@@ -1,38 +1,36 @@
 <?php
 
-namespace Zenstruck\Bundle\CacheBundle\DependencyInjection;
+namespace Zenstruck\CacheBundle\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpKernel\DependencyInjection\ConfigurableExtension;
+use Symfony\Component\DependencyInjection\Loader;
+use Zenstruck\CacheBundle\Http\ClientFactory;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-class ZenstruckCacheExtension extends Extension
+class ZenstruckCacheExtension extends ConfigurableExtension
 {
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
-    public function load(array $configs, ContainerBuilder $container)
+    protected function loadInternal(array $mergedConfig, ContainerBuilder $container)
     {
-        $configuration = new Configuration();
-        $config = $this->processConfiguration($configuration, $configs);
+        $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader->load('services.xml');
 
-        $loader = new XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $client = new Definition(ClientFactory::getBestClass());
+        $client->setPublic(false);
 
-        if (class_exists('\Guzzle\Http\Client')) {
-            $loader->load('guzzle_url_fetcher.xml');
-        } elseif (class_exists('\Buzz\Browser')) {
-            $loader->load('buzz_url_fetcher.xml');
-        } else {
-            throw new \Exception('Either Guzzle or Buzz must be available to use ZenstruckCacheBundle.');
-        }
+        $container->setDefinition('zenstruck_cache.client', $client);
+        $container->getDefinition('zenstruck_cache.crawler')->replaceArgument(0, new Reference('zenstruck_cache.client'));
 
-        $loader->load('url_registry.xml');
-
-        if ($config['sitemap_provider']) {
+        if ($mergedConfig['sitemap_provider']['enabled']) {
+            $container->setParameter('zenstruck_cache.sitemap_provider.host', $mergedConfig['sitemap_provider']['host']);
             $loader->load('sitemap_provider.xml');
         }
     }

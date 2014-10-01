@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="zenstruck_cache.crawler.class">Zenstruck\CacheBundle\Crawler</parameter>
+        <parameter key="zenstruck_cache.http_cache_warmup_command.class">Zenstruck\CacheBundle\Command\HttpCacheWarmupCommand</parameter>
+    </parameters>
+
+    <services>
+        <service id="zenstruck_cache.crawler" class="%zenstruck_cache.crawler.class%" public="false">
+            <argument /> <!-- client -->
+        </service>
+        <service id="zenstruck_cache.http_cache_warmup_command" class="%zenstruck_cache.http_cache_warmup_command.class%">
+            <argument type="service" id="zenstruck_cache.crawler" />
+            <argument type="service" id="logger" on-invalid="null" />
+            <tag name="monolog.logger" channel="httpcache_warmup" />
+            <tag name="console.command" />
+        </service>
+    </services>
+</container>
