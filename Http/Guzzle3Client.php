@@ -129,6 +129,7 @@ class Guzzle3Client implements Client
     {
         switch ($e->getErrorNo()) {
             case 28: // timeout
+
                 return new Response($e->getRequest()->getUrl(), $e->getError(), 408);
         }
 

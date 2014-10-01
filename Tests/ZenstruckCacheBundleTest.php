@@ -19,7 +19,6 @@ class ZenstruckCacheBundleTest extends \PHPUnit_Framework_TestCase
             ->method('addCompilerPass')
             ->with($this->isInstanceOf('Symfony\\Component\\DependencyInjection\\Compiler\\CompilerPassInterface'));
 
-
         $bundle = new ZenstruckCacheBundle();
         $bundle->build($container);
     }

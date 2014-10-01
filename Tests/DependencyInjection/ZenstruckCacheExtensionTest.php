@@ -5,7 +5,6 @@ namespace Tests\DependencyInjection;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Zenstruck\CacheBundle\DependencyInjection\ZenstruckCacheExtension;
 
-
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
