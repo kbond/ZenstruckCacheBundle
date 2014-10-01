@@ -1,6 +1,12 @@
 # ZenstruckCacheBundle
 
-Provides a httpcache warmup command for Symfony2.  The command simply executes a `GET` request on a list of urls.
+[![Build Status](http://img.shields.io/travis/kbond/ZenstruckCacheBundle.svg?style=flat)](https://travis-ci.org/kbond/ZenstruckCacheBundle)
+[![Scrutinizer Code Quality](http://img.shields.io/scrutinizer/g/kbond/ZenstruckCacheBundle.svg?style=flat)](https://scrutinizer-ci.com/g/kbond/ZenstruckCacheBundle/)
+[![Code Coverage](http://img.shields.io/scrutinizer/coverage/g/kbond/ZenstruckCacheBundle.svg?style=flat)](https://scrutinizer-ci.com/g/kbond/ZenstruckCacheBundle/)
+[![Latest Stable Version](http://img.shields.io/packagist/v/zenstruck/cache-bundle.svg?style=flat)](https://packagist.org/packages/zenstruck/cache-bundle)
+[![License](http://img.shields.io/packagist/l/zenstruck/cache-bundle.svg?style=flat)](https://packagist.org/packages/zenstruck/cache-bundle)
+
+Provides a httpcache warmup command for Symfony2. The command simply executes a `GET` request on a list of urls.
 One or more url providers must be registered.
 
 ## Installation
