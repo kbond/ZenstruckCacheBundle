@@ -28,7 +28,7 @@ class UrlProviderCompilerPassTest extends AbstractCompilerPassTestCase
             'zenstruck_cache.crawler',
             'addUrlProvider',
             array(
-                new Reference('my_provider')
+                new Reference('my_provider'),
             )
         );
     }

@@ -27,7 +27,7 @@ class Guzzle4ClientTest extends ClientTest
         $guzzle->getEmitter()->attach(
             new Mock(
                 array(
-                    new Response($status, array(), Stream::factory($content))
+                    new Response($status, array(), Stream::factory($content)),
                 )
             )
         );
@@ -41,7 +41,7 @@ class Guzzle4ClientTest extends ClientTest
         $guzzle->getEmitter()->attach(
             new Mock(
                 array(
-                    new RequestException('timeout...', $guzzle->createRequest('GET', self::EXAMPLE_URL))
+                    new RequestException('timeout...', $guzzle->createRequest('GET', self::EXAMPLE_URL)),
                 )
             )
         );

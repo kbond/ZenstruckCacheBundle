@@ -41,7 +41,7 @@ class HttpCacheWarmupCommand extends Command
                 array(
                     new InputOption('parallel-requests', 'p', InputOption::VALUE_REQUIRED | InputOption::VALUE_REQUIRED, 'The number of requests to send in parallel', '10'),
                     new InputOption('timeout', 't', InputOption::VALUE_REQUIRED | InputOption::VALUE_REQUIRED, 'The timeout in seconds', '10'),
-                    new InputOption('follow-redirects', 'r', InputOption::VALUE_NONE, 'Follow redirects?')
+                    new InputOption('follow-redirects', 'r', InputOption::VALUE_NONE, 'Follow redirects?'),
                 )
             )
             ->setDescription('Warms up an http cache')
@@ -102,7 +102,7 @@ EOF
         $table->setHeaders(array('Code', 'Reason', 'Count'));
 
         foreach ($summary as $code => $count) {
-            $table->addRow(array($code, Response::getStatusText($code) ,$count));
+            $table->addRow(array($code, Response::getStatusText($code), $count));
         }
 
         $table->addRow(new TableSeparator());

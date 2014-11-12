@@ -41,7 +41,7 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase
                 $this->returnValue(
                     array(
                         new Response('foo.com'),
-                        new Response('bar.com')
+                        new Response('bar.com'),
                     )
                 )
             )
@@ -54,7 +54,7 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase
             ->will(
                 $this->returnValue(
                     array(
-                        new Response('baz.com', '', 404)
+                        new Response('baz.com', '', 404),
                     )
                 )
             )
@@ -77,7 +77,7 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase
         $codes = array();
         $callback = function (Response $response) use (&$codes) {
             $codes[] = $response->getStatusCode();
-        } ;
+        };
 
         $crawler->crawl(2, false, 10, $callback);
 

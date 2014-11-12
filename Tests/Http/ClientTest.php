@@ -50,7 +50,7 @@ abstract class ClientTest extends \PHPUnit_Framework_TestCase
             array(200, '<p>foo</p>'),
             array(404, '<p>foo</p>'),
             array(500, '<p>foo</p>'),
-            array(301, '')
+            array(301, ''),
         );
     }
 

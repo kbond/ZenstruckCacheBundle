@@ -92,8 +92,8 @@ class Guzzle4Client implements Client
     {
         return new Response(
             $guzzleResponse->getEffectiveUrl(),
-            (string)$guzzleResponse->getBody(),
-            (int)$guzzleResponse->getStatusCode(),
+            (string) $guzzleResponse->getBody(),
+            (int) $guzzleResponse->getStatusCode(),
             $guzzleResponse->getHeaders()
         );
     }
