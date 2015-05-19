@@ -10,21 +10,21 @@ use Zenstruck\CacheBundle\Http\Client;
  */
 class SitemapUrlProvider implements UrlProvider
 {
-    private $host;
+    private $hosts;
     private $client;
     private $urls;
 
     /**
-     * @param string $host
+     * @param array $host
      * @param Client $client
      */
-    public function __construct($host, Client $client)
+    public function __construct(array $hosts, Client $client)
     {
         if (!class_exists('Symfony\\Component\\DomCrawler\\Crawler') || !class_exists('Symfony\\Component\\CssSelector\\CssSelector')) {
             throw new \RuntimeException('symfony/dom-crawler and symfony/css-selector must be installed to use SitemapUrlProvider.');
         }
 
-        $this->host = $host;
+        $this->hosts = $hosts;
         $this->client = $client;
     }
 
@@ -39,16 +39,18 @@ class SitemapUrlProvider implements UrlProvider
 
         $urls = array();
 
-        $sitemaps = $this->getSitemapEntries($this->addPathToHost('sitemap_index.xml'));
+        foreach ($this->hosts as $host) {
+            $sitemaps = $this->getSitemapEntries($this->addPathToHost('sitemap_index.xml', $host));
 
-        if (count($sitemaps)) {
-            // index found, loop through sitemaps
-            foreach ($sitemaps as $sitemap) {
-                $urls = array_merge($urls, $this->getSitemapEntries($sitemap));
+            if (count($sitemaps)) {
+                // index found, loop through sitemaps
+                foreach ($sitemaps as $sitemap) {
+                    $urls = array_merge($urls, $this->getSitemapEntries($sitemap));
+                }
+            } else {
+                // no index, try sitemap.xml
+                $urls = $this->getSitemapEntries($this->addPathToHost('sitemap.xml', $host));
             }
-        } else {
-            // no index, try sitemap.xml
-            $urls = $this->getSitemapEntries($this->addPathToHost('sitemap.xml'));
         }
 
         return $this->urls = $urls;
@@ -63,13 +65,14 @@ class SitemapUrlProvider implements UrlProvider
     }
 
     /**
-     * @param string $path
+     * @param $path
+     * @param $host
      *
      * @return string
      */
-    private function addPathToHost($path)
+    private function addPathToHost($path, $host)
     {
-        return sprintf('%s/%s', trim($this->host, '/'), ltrim($path, '/'));
+        return sprintf('%s/%s', trim($host, '/'), ltrim($path, '/'));
     }
 
     /**

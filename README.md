@@ -61,7 +61,19 @@ To enable the sitemap provider, configure it in your `config.yml`:
 ```yaml
 zenstruck_cache:
     sitemap_provider:
-        host: http://www.example.com
+        hosts:
+            - http://www.example.com
+```
+
+or for multiple hosts:
+
+```yaml
+zenstruck_cache:
+    sitemap_provider:
+        hosts:
+            - http://www.example.com
+            - http://www.example.ch
+            - http://www.example.net
 ```
 
 ## Add a Custom URL Provider
@@ -106,5 +118,5 @@ zenstruck_cache:
 zenstruck_cache:
     sitemap_provider:
         enabled:              false
-        host:                 ~ # Required
+        hosts:                []
 ```
