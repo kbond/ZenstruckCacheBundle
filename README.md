@@ -76,8 +76,6 @@ zenstruck_cache:
             - http://www.example.net
 ```
 
-The usage of `host` is deprecated and will be removed in a major release.
-
 ## Add a Custom URL Provider
 
 1. Create a class that implements `Zenstruck\CacheBundle\UrlProvider\UrlProvider`:
@@ -120,6 +118,5 @@ The usage of `host` is deprecated and will be removed in a major release.
 zenstruck_cache:
     sitemap_provider:
         enabled:              false
-        host:                 ~ # Deprecated
         hosts:                []
 ```

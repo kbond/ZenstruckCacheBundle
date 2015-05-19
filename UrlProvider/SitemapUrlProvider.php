@@ -15,10 +15,10 @@ class SitemapUrlProvider implements UrlProvider
     private $urls;
 
     /**
-     * @param string $host
+     * @param array $host
      * @param Client $client
      */
-    public function __construct($hosts, Client $client)
+    public function __construct(array $hosts, Client $client)
     {
         if (!class_exists('Symfony\\Component\\DomCrawler\\Crawler') || !class_exists('Symfony\\Component\\CssSelector\\CssSelector')) {
             throw new \RuntimeException('symfony/dom-crawler and symfony/css-selector must be installed to use SitemapUrlProvider.');
