@@ -36,19 +36,20 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
         $this->assertTrue($this->container->has('zenstruck_cache.sitemap_provider'));
     }
 
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     */
-    public function testMissingHost()
+    public function testWithHosts()
     {
         $this->load(
             array(
                 'sitemap_provider' => array(
-                    'host' => null,
+                    'hosts' => ['http://www.example.com'],
                 ),
             )
         );
         $this->compile();
+
+        $this->assertTrue($this->container->has('zenstruck_cache.crawler'));
+        $this->assertTrue($this->container->has('zenstruck_cache.http_cache_warmup_command'));
+        $this->assertTrue($this->container->has('zenstruck_cache.sitemap_provider'));
     }
 
     /**
