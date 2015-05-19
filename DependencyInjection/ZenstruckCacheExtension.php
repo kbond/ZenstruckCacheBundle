@@ -30,7 +30,12 @@ class ZenstruckCacheExtension extends ConfigurableExtension
         $container->getDefinition('zenstruck_cache.crawler')->replaceArgument(0, new Reference('zenstruck_cache.client'));
 
         if ($mergedConfig['sitemap_provider']['enabled']) {
-            $container->setParameter('zenstruck_cache.sitemap_provider.host', $mergedConfig['sitemap_provider']['host']);
+
+            if (isset($mergedConfig['sitemap_provider']['host'])) {
+                $mergedConfig['sitemap_provider']['hosts'] = array_merge($mergedConfig['sitemap_provider']['hosts'], array($mergedConfig['sitemap_provider']['host']));
+            }
+
+            $container->setParameter('zenstruck_cache.sitemap_provider.hosts', $mergedConfig['sitemap_provider']['hosts']);
             $loader->load('sitemap_provider.xml');
         }
     }

@@ -10,7 +10,7 @@
 
     <services>
         <service id="zenstruck_cache.sitemap_provider" class="%zenstruck_cache.sitemap_provider.class%" public="false">
-            <argument>%zenstruck_cache.sitemap_provider.host%</argument>
+            <argument>%zenstruck_cache.sitemap_provider.hosts%</argument>
             <argument type="service" id="zenstruck_cache.client" />
             <tag name="zenstruck_cache.url_provider" />
         </service>
