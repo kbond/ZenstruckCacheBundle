@@ -26,7 +26,7 @@ class SitemapUrlProviderTest extends \PHPUnit_Framework_TestCase
             ;
         }
 
-        $provider = new SitemapUrlProvider('', $client);
+        $provider = new SitemapUrlProvider(array(''), $client);
 
         $this->assertCount($urlCount, $provider->getUrls());
         $this->assertSame($urls, $provider->getUrls());
