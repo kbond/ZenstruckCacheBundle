@@ -26,17 +26,17 @@
         "matthiasnoback/symfony-dependency-injection-test": "~0.4"
     },
     "autoload": {
-        "psr-0": { "Zenstruck\\CacheBundle": "" }
+        "psr-4": { "Zenstruck\\CacheBundle\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Zenstruck\\CacheBundle\\Tests\\": "tests/" }
     },
     "suggest": {
-        "guzzle/http": "To use Guzzle3 to fetch urls",
-        "guzzlehttp/guzzle": "To use Guzzle4 to fetch urls",
         "dpn/xml-sitemap-bundle": "Create a sitemap with Symfony"
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.x-dev"
+            "dev-master": "3.x-dev"
         }
-    },
-    "target-dir": "Zenstruck/CacheBundle"
+    }
 }
