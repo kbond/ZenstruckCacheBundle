@@ -24,7 +24,7 @@ class Crawler implements \Countable
      * @param LoggerInterface $logger
      * @param UrlProvider[]   $urlProviders
      */
-    public function __construct(HttpAdapter $httpAdapter, MessageFactory $messageFactory, LoggerInterface $logger = null, array $urlProviders = array())
+    public function __construct(HttpAdapter $httpAdapter, MessageFactory $messageFactory, LoggerInterface $logger = null, array $urlProviders = [])
     {
         $this->httpAdapter    = $httpAdapter;
         $this->messageFactory = $messageFactory;
@@ -94,7 +94,7 @@ class Crawler implements \Countable
      */
     private function getUrls()
     {
-        $urls = array();
+        $urls = [];
 
         foreach ($this->urlProviders as $provider) {
             $urls = array_merge($urls, $provider->getUrls());

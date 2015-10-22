@@ -49,7 +49,7 @@ class SitemapUrlProvider implements UrlProvider
             return $this->urls;
         }
 
-        $urls = array();
+        $urls = [];
 
         foreach ($this->hosts as $host) {
             $urls = array_merge($urls, $this->getUrlsForHost($host));
@@ -72,7 +72,7 @@ class SitemapUrlProvider implements UrlProvider
             return $this->getSitemapEntries($this->addPathToHost('sitemap.xml', $host));
         }
 
-        $urls = array();
+        $urls = [];
 
         foreach ($sitemaps as $sitemap) {
             $urls = array_merge($urls, $this->getSitemapEntries($sitemap));
@@ -102,12 +102,12 @@ class SitemapUrlProvider implements UrlProvider
         $response = $this->httpAdapter->sendRequest($this->messageFactory->createRequest('GET', $url));
 
         if (200 !== $response->getStatusCode()) {
-            return array();
+            return [];
         }
 
         $body    = (string) $response->getBody();
         $crawler = new DomCrawler($body);
-        $urls    = array();
+        $urls    = [];
         $filter  = 'loc';
 
         // check for namespaces

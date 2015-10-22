@@ -27,9 +27,9 @@ class UrlProviderCompilerPassTest extends AbstractCompilerPassTestCase
         $this->assertContainerBuilderHasServiceDefinitionWithMethodCall(
             'zenstruck_cache.crawler',
             'addUrlProvider',
-            array(
+            [
                 new Reference('my_provider'),
-            )
+            ]
         );
     }
 

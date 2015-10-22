@@ -24,7 +24,7 @@ class UrlProviderCompilerPass implements CompilerPassInterface
         $taggedServices = $container->findTaggedServiceIds('zenstruck_cache.url_provider');
 
         foreach ($taggedServices as $id => $attributes) {
-            $definition->addMethodCall('addUrlProvider', array(new Reference($id)));
+            $definition->addMethodCall('addUrlProvider', [new Reference($id)]);
         }
     }
 }

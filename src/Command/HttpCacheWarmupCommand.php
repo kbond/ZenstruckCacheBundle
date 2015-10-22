@@ -34,7 +34,7 @@ class HttpCacheWarmupCommand extends ContainerAwareCommand
     {
         /** @var Crawler $crawler */
         $crawler  = $this->getContainer()->get('zenstruck_cache.crawler');
-        $summary  = array();
+        $summary  = [];
         $total    = count($crawler);
         $progress = new ProgressBar($output, $total);
 
@@ -70,14 +70,14 @@ class HttpCacheWarmupCommand extends ContainerAwareCommand
 
         $table = new Table($output);
 
-        $table->setHeaders(array('Code', 'Reason', 'Count'));
+        $table->setHeaders(['Code', 'Reason', 'Count']);
 
         foreach ($summary as $code => $count) {
-            $table->addRow(array($code, Response::$statusTexts[$code], $count));
+            $table->addRow([$code, Response::$statusTexts[$code], $count]);
         }
 
         $table->addRow(new TableSeparator());
-        $table->addRow(array('', 'Total', $total));
+        $table->addRow(['', 'Total', $total]);
 
         $table->render();
         $output->writeln('');

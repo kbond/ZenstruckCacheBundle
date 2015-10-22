@@ -26,7 +26,7 @@ class CrawlerTest extends TestCase
             ->method('count')
             ->willReturn(2);
 
-        $crawler = new Crawler($this->mockHttpAdapter(), $this->mockMessageFactory(), null, array($provider1));
+        $crawler = new Crawler($this->mockHttpAdapter(), $this->mockMessageFactory(), null, [$provider1]);
         $crawler->addUrlProvider($provider2);
 
         $this->assertSame(5, $crawler->count());
@@ -78,28 +78,28 @@ class CrawlerTest extends TestCase
         $provider1
             ->expects($this->once())
             ->method('getUrls')
-            ->willReturn(array('foo.com', 'bar.com'));
+            ->willReturn(['foo.com', 'bar.com']);
 
         $provider2 = $this->getMock('Zenstruck\CacheBundle\Url\UrlProvider');
         $provider2
             ->expects($this->once())
             ->method('getUrls')
-            ->willReturn(array('baz.com'));
+            ->willReturn(['baz.com']);
 
         $logger = $this->getMock('Psr\Log\LoggerInterface');
         $logger
             ->expects($this->exactly(3))
             ->method('log')
             ->withConsecutive(
-                array(LogLevel::DEBUG, '[200] foo.com'),
-                array(LogLevel::DEBUG, '[200] bar.com'),
-                array(LogLevel::NOTICE, '[404] baz.com')
+                [LogLevel::DEBUG, '[200] foo.com'],
+                [LogLevel::DEBUG, '[200] bar.com'],
+                [LogLevel::NOTICE, '[404] baz.com']
             );
 
-        $crawler = new Crawler($httpAdapter, $messageFactory, $logger, array($provider1, $provider2));
+        $crawler = new Crawler($httpAdapter, $messageFactory, $logger, [$provider1, $provider2]);
 
-        $urls     = array();
-        $codes    = array();
+        $urls     = [];
+        $codes    = [];
         $callback = function (ResponseInterface $response, $url) use (&$urls, &$codes) {
             $urls[]  = $url;
             $codes[] = $response->getStatusCode();
@@ -107,7 +107,7 @@ class CrawlerTest extends TestCase
 
         $crawler->crawl($callback);
 
-        $this->assertSame(array('foo.com', 'bar.com', 'baz.com'), $urls);
-        $this->assertSame(array(200, 200, 404), $codes);
+        $this->assertSame(['foo.com', 'bar.com', 'baz.com'], $urls);
+        $this->assertSame([200, 200, 404], $codes);
     }
 }

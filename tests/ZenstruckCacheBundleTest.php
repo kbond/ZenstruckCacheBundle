@@ -13,7 +13,7 @@ class ZenstruckCacheBundleTest extends \PHPUnit_Framework_TestCase
     {
         $container = $this
             ->getMockBuilder('Symfony\Component\DependencyInjection\ContainerBuilder')
-            ->setMethods(array('addCompilerPass'))
+            ->setMethods(['addCompilerPass'])
             ->getMock();
 
         $container

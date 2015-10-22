@@ -15,7 +15,7 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
 {
     public function testAdapterAndFactoryAsService()
     {
-        $this->load(array('http_adapter' => 'foo', 'message_factory' => 'bar'));
+        $this->load(['http_adapter' => 'foo', 'message_factory' => 'bar']);
         $this->compile();
 
         $this->assertContainerBuilderHasService('zenstruck_cache.crawler');
@@ -26,10 +26,10 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
 
     public function testAdapterAndFactoryAsClass()
     {
-        $this->load(array(
+        $this->load([
             'http_adapter'    => 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureValidHttpAdapter',
             'message_factory' => 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureValidMessageFactory',
-        ));
+        ]);
         $this->compile();
 
         $this->assertContainerBuilderHasService('zenstruck_cache.crawler');
@@ -45,7 +45,7 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
     {
         $this->setExpectedException('\Symfony\Component\Config\Definition\Exception\InvalidConfigurationException', $expectedExceptionMessage);
 
-        $this->load(array('http_adapter' => $class, 'message_factory' => 'foo'));
+        $this->load(['http_adapter' => $class, 'message_factory' => 'foo']);
         $this->compile();
     }
 
@@ -56,17 +56,17 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
     {
         $this->setExpectedException('\Symfony\Component\Config\Definition\Exception\InvalidConfigurationException', $expectedExceptionMessage);
 
-        $this->load(array('http_adapter' => 'foo', 'message_factory' => $class));
+        $this->load(['http_adapter' => 'foo', 'message_factory' => $class]);
         $this->compile();
     }
 
     public function testWithSitemapProviderHosts()
     {
-        $this->load(array(
+        $this->load([
             'http_adapter'     => 'foo',
             'message_factory'  => 'bar',
-            'sitemap_provider' => array('hosts' => array('http://www.example.com')),
-        ));
+            'sitemap_provider' => ['hosts' => ['http://www.example.com']],
+        ]);
         $this->compile();
 
         $this->assertContainerBuilderHasService('zenstruck_cache.sitemap_provider');
@@ -77,48 +77,48 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
      */
     public function testWithEmptySitemapProviderHosts()
     {
-        $this->load(array(
+        $this->load([
             'http_adapter'     => 'foo',
             'message_factory'  => 'bar',
-            'sitemap_provider' => array('hosts' => array()),
-        ));
+            'sitemap_provider' => ['hosts' => []],
+        ]);
         $this->compile();
     }
 
     public function invalidHttpAdapterClassProvider()
     {
-        return array(
-            array(
+        return [
+            [
                 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidHttpAdapter1',
                 'HttpAdapter class must implement "Http\Adapter\HttpAdapter".',
-            ),
-            array(
+            ],
+            [
                 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidHttpAdapter2',
                 'HttpAdapter class must not have required constructor arguments.',
-            ),
-            array(
+            ],
+            [
                 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidHttpAdapter3',
                 'HttpAdapter class must not be abstract.',
-            ),
-        );
+            ],
+        ];
     }
 
     public function invalidMessageFactoryClassProvider()
     {
-        return array(
-            array(
+        return [
+            [
                 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidMessageFactory1',
                 'MessageFactory class must implement "Http\Message\MessageFactory".',
-            ),
-            array(
+            ],
+            [
                 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidMessageFactory2',
                 'MessageFactory class must not have required constructor arguments.',
-            ),
-            array(
+            ],
+            [
                 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidMessageFactory3',
                 'MessageFactory class must not be abstract.',
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -126,7 +126,7 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
      */
     protected function getContainerExtensions()
     {
-        return array(new ZenstruckCacheExtension());
+        return [new ZenstruckCacheExtension()];
     }
 }
 

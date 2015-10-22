@@ -23,7 +23,7 @@ class HttpCacheWarmupCommandTest extends TestCase
         $provider
             ->expects($this->once())
             ->method('getUrls')
-            ->willReturn(array('foo.com', 'bar.com', 'baz.com'));
+            ->willReturn(['foo.com', 'bar.com', 'baz.com']);
 
         $request = $this->mockRequest();
 
@@ -65,14 +65,14 @@ class HttpCacheWarmupCommandTest extends TestCase
             ->with($request)
             ->willReturn($this->mockResponse('', 404));
 
-        $crawler = new Crawler($httpAdapter, $messageFactory, null, array($provider));
+        $crawler = new Crawler($httpAdapter, $messageFactory, null, [$provider]);
 
         $application = new Application();
         $application->add($this->createCommand($crawler));
 
         $command       = $application->find('zenstruck:http-cache:warmup');
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array('command' => $command->getName()));
+        $commandTester->execute(['command' => $command->getName()]);
 
         $this->assertRegExp('/Beginning http cache warmup./', $commandTester->getDisplay());
         $this->assertRegExp('/Summary:/', $commandTester->getDisplay());
@@ -87,7 +87,7 @@ class HttpCacheWarmupCommandTest extends TestCase
      */
     public function testExecuteNoUrlProviders()
     {
-        $crawler = $this->getMock('Zenstruck\CacheBundle\Url\Crawler', array(), array(), '', false);
+        $crawler = $this->getMock('Zenstruck\CacheBundle\Url\Crawler', [], [], '', false);
         $crawler
             ->expects($this->once())
             ->method('count')
@@ -98,7 +98,7 @@ class HttpCacheWarmupCommandTest extends TestCase
 
         $command       = $application->find('zenstruck:http-cache:warmup');
         $commandTester = new CommandTester($command);
-        $commandTester->execute(array('command' => $command->getName()));
+        $commandTester->execute(['command' => $command->getName()]);
     }
 
     private function createCommand($crawler)
