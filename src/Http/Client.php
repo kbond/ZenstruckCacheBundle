@@ -2,6 +2,8 @@
 
 namespace Zenstruck\CacheBundle\Http;
 
+use Psr\Http\Message\ResponseInterface;
+
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
@@ -14,18 +16,7 @@ interface Client
      * @param bool   $followRedirects
      * @param int    $timeout
      *
-     * @return Response
+     * @return ResponseInterface
      */
     public function fetch($url, $followRedirects = false, $timeout = 10);
-
-    /**
-     * Fetches responses from multiple URLs
-     *
-     * @param array $urls
-     * @param bool  $followRedirects
-     * @param int   $timeout
-     *
-     * @return Response[]
-     */
-    public function fetchMulti(array $urls, $followRedirects = false, $timeout = 10);
 }

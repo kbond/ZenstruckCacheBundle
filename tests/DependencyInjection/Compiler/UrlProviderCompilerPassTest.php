@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\DependencyInjection\Compiler;
+namespace Zenstruck\RedirectBundle\Tests\DependencyInjection\Compiler;
 
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractCompilerPassTestCase;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

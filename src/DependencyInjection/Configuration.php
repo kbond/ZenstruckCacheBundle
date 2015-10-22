@@ -17,6 +17,11 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+                ->scalarNode('client')
+                    ->info('Either a class or a service that implements Zenstruck\CacheBundle\Http\Client.')
+                    ->isRequired()
+                    ->defaultNull()
+                ->end()
                 ->arrayNode('sitemap_provider')
                     ->canBeEnabled()
                     ->children()

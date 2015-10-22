@@ -1,6 +1,6 @@
 <?php
 
-namespace Zenstruck\CacheBundle\UrlProvider;
+namespace Zenstruck\CacheBundle\Url;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>

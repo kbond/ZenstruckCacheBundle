@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests;
+namespace Zenstruck\CacheBundle\Tests;
 
 use Zenstruck\CacheBundle\ZenstruckCacheBundle;
 
