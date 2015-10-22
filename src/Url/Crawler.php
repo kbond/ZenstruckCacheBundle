@@ -2,30 +2,34 @@
 
 namespace Zenstruck\CacheBundle\Url;
 
+use Http\Adapter\HttpAdapter;
+use Http\Message\MessageFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
-use Zenstruck\CacheBundle\Http\Client;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
 class Crawler implements \Countable
 {
-    private $client;
+    private $httpAdapter;
+    private $messageFactory;
     private $logger;
     private $urlProviders;
 
     /**
-     * @param Client          $client
+     * @param HttpAdapter     $httpAdapter
+     * @param MessageFactory  $messageFactory
      * @param LoggerInterface $logger
      * @param UrlProvider[]   $urlProviders
      */
-    public function __construct(Client $client, LoggerInterface $logger = null, array $urlProviders = array())
+    public function __construct(HttpAdapter $httpAdapter, MessageFactory $messageFactory, LoggerInterface $logger = null, array $urlProviders = array())
     {
-        $this->client       = $client;
-        $this->logger       = $logger;
-        $this->urlProviders = $urlProviders;
+        $this->httpAdapter    = $httpAdapter;
+        $this->messageFactory = $messageFactory;
+        $this->logger         = $logger;
+        $this->urlProviders   = $urlProviders;
     }
 
     /**
@@ -51,18 +55,16 @@ class Crawler implements \Countable
     }
 
     /**
-     * @param bool     $followRedirects
-     * @param int      $timeout
-     * @param callable $callback        Response as first argument, calling URL as second.
+     * @param callable $callback Response as first argument, calling URL as second
      */
-    public function crawl($followRedirects = false, $timeout = 10, $callback = null)
+    public function crawl($callback = null)
     {
         if (null !== $callback && !is_callable($callback)) {
             throw new \InvalidArgumentException('Valid callback required.');
         }
 
         foreach ($this->getUrls() as $url) {
-            $response = $this->client->fetch($url, $followRedirects, $timeout);
+            $response = $this->httpAdapter->sendRequest($this->messageFactory->createRequest('GET', $url));
 
             $this->log($response, $url);
 

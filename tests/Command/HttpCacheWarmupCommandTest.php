@@ -4,14 +4,14 @@ namespace Zenstruck\CacheBundle\Tests\Command;
 
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
-use Zend\Diactoros\Response\HtmlResponse as Response;
 use Zenstruck\CacheBundle\Command\HttpCacheWarmupCommand;
+use Zenstruck\CacheBundle\Tests\TestCase;
 use Zenstruck\CacheBundle\Url\Crawler;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-class HttpCacheWarmupCommandTest extends \PHPUnit_Framework_TestCase
+class HttpCacheWarmupCommandTest extends TestCase
 {
     public function testExecute()
     {
@@ -23,26 +23,49 @@ class HttpCacheWarmupCommandTest extends \PHPUnit_Framework_TestCase
         $provider
             ->expects($this->once())
             ->method('getUrls')
-            ->willReturn(array('http://foo.com', 'http://bar.com', 'http://baz.com'));
+            ->willReturn(array('foo.com', 'bar.com', 'baz.com'));
 
-        $client = $this->getMock('Zenstruck\CacheBundle\Http\Client');
-        $client
+        $request = $this->mockRequest();
+
+        $messageFactory = $this->mockMessageFactory();
+        $messageFactory
             ->expects($this->at(0))
-            ->method('fetch')
-            ->with('http://foo.com')
-            ->willReturn(new Response('', 200));
-        $client
-            ->expects($this->at(1))
-            ->method('fetch')
-            ->with('http://bar.com')
-            ->willReturn(new Response('', 404));
-        $client
-            ->expects($this->at(2))
-            ->method('fetch')
-            ->with('http://baz.com')
-            ->willReturn(new Response('', 200));
+            ->method('createRequest')
+            ->with('GET', 'foo.com')
+            ->willReturn($request);
 
-        $crawler = new Crawler($client, null, array($provider));
+        $messageFactory
+            ->expects($this->at(1))
+            ->method('createRequest')
+            ->with('GET', 'bar.com')
+            ->willReturn($request);
+
+        $messageFactory
+            ->expects($this->at(2))
+            ->method('createRequest')
+            ->with('GET', 'baz.com')
+            ->willReturn($request);
+
+        $httpAdapter = $this->mockHttpAdapter();
+        $httpAdapter
+            ->expects($this->at(0))
+            ->method('sendRequest')
+            ->with($request)
+            ->willReturn($this->mockResponse('', 200));
+
+        $httpAdapter
+            ->expects($this->at(1))
+            ->method('sendRequest')
+            ->with($request)
+            ->willReturn($this->mockResponse('', 200));
+
+        $httpAdapter
+            ->expects($this->at(2))
+            ->method('sendRequest')
+            ->with($request)
+            ->willReturn($this->mockResponse('', 404));
+
+        $crawler = new Crawler($httpAdapter, $messageFactory, null, array($provider));
 
         $application = new Application();
         $application->add($this->createCommand($crawler));

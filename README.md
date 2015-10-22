@@ -34,17 +34,10 @@ One or more url providers must be registered.
 
 ## HttpCache Warmup Command
 
-```
 Usage:
- zenstruck:http-cache:warmup [-p|--parallel-requests="..."] [-t|--timeout="..."] [-r|--follow-redirects]
 
-Options:
- --parallel-requests (-p) The number of requests to send in parallel (default: "10")
- --timeout (-t)           The timeout in seconds (default: "10")
- --follow-redirects (-r)  Follow redirects?
-
-Help:
- The zenstruck:http-cache:warmup command warms up the http cache.
+```
+app/console zenstruck:http-cache:warmup
 ```
 
 ## Sitemap Provider

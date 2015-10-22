@@ -2,14 +2,15 @@
 
 namespace Zenstruck\CacheBundle\Tests\Url;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LogLevel;
-use Zend\Diactoros\Response\HtmlResponse as Response;
+use Zenstruck\CacheBundle\Tests\TestCase;
 use Zenstruck\CacheBundle\Url\Crawler;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
-class CrawlerTest extends \PHPUnit_Framework_TestCase
+class CrawlerTest extends TestCase
 {
     public function testCount()
     {
@@ -25,7 +26,7 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase
             ->method('count')
             ->willReturn(2);
 
-        $crawler = new Crawler($this->getMock('Zenstruck\CacheBundle\Http\Client'), null, array($provider1));
+        $crawler = new Crawler($this->mockHttpAdapter(), $this->mockMessageFactory(), null, array($provider1));
         $crawler->addUrlProvider($provider2);
 
         $this->assertSame(5, $crawler->count());
@@ -33,24 +34,45 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase
 
     public function testCrawl()
     {
-        $client = $this->getMock('Zenstruck\CacheBundle\Http\Client');
-        $client
+        $request = $this->mockRequest();
+
+        $messageFactory = $this->mockMessageFactory();
+        $messageFactory
             ->expects($this->at(0))
-            ->method('fetch')
-            ->with('foo.com')
-            ->willReturn(new Response(''));
+            ->method('createRequest')
+            ->with('GET', 'foo.com')
+            ->willReturn($request);
 
-        $client
+        $messageFactory
             ->expects($this->at(1))
-            ->method('fetch')
-            ->with('bar.com')
-            ->willReturn(new Response(''));
+            ->method('createRequest')
+            ->with('GET', 'bar.com')
+            ->willReturn($request);
 
-        $client
+        $messageFactory
             ->expects($this->at(2))
-            ->method('fetch')
-            ->with('baz.com')
-            ->willReturn(new Response('', 404));
+            ->method('createRequest')
+            ->with('GET', 'baz.com')
+            ->willReturn($request);
+
+        $httpAdapter = $this->mockHttpAdapter();
+        $httpAdapter
+            ->expects($this->at(0))
+            ->method('sendRequest')
+            ->with($request)
+            ->willReturn($this->mockResponse('', 200));
+
+        $httpAdapter
+            ->expects($this->at(1))
+            ->method('sendRequest')
+            ->with($request)
+            ->willReturn($this->mockResponse('', 200));
+
+        $httpAdapter
+            ->expects($this->at(2))
+            ->method('sendRequest')
+            ->with($request)
+            ->willReturn($this->mockResponse('', 404));
 
         $provider1 = $this->getMock('Zenstruck\CacheBundle\Url\UrlProvider');
         $provider1
@@ -74,16 +96,16 @@ class CrawlerTest extends \PHPUnit_Framework_TestCase
                 array(LogLevel::NOTICE, '[404] baz.com')
             );
 
-        $crawler = new Crawler($client, $logger, array($provider1, $provider2));
+        $crawler = new Crawler($httpAdapter, $messageFactory, $logger, array($provider1, $provider2));
 
         $urls     = array();
         $codes    = array();
-        $callback = function (Response $response, $url) use (&$urls, &$codes) {
+        $callback = function (ResponseInterface $response, $url) use (&$urls, &$codes) {
             $urls[]  = $url;
             $codes[] = $response->getStatusCode();
         };
 
-        $crawler->crawl(false, 10, $callback);
+        $crawler->crawl($callback);
 
         $this->assertSame(array('foo.com', 'bar.com', 'baz.com'), $urls);
         $this->assertSame(array(200, 200, 404), $codes);

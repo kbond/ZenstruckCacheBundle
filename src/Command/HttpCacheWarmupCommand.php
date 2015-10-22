@@ -8,7 +8,6 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableSeparator;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Zenstruck\CacheBundle\Url\Crawler;
@@ -25,10 +24,6 @@ class HttpCacheWarmupCommand extends ContainerAwareCommand
     {
         $this
             ->setName('zenstruck:http-cache:warmup')
-            ->setDefinition(array(
-                new InputOption('timeout', 't', InputOption::VALUE_REQUIRED | InputOption::VALUE_REQUIRED, 'The timeout in seconds', '10'),
-                new InputOption('follow-redirects', 'r', InputOption::VALUE_NONE, 'Follow redirects?'),
-            ))
             ->setDescription('Warms up an http cache');
     }
 
@@ -38,12 +33,10 @@ class HttpCacheWarmupCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         /** @var Crawler $crawler */
-        $crawler   = $this->getContainer()->get('zenstruck_cache.crawler');
-        $timeout   = (int) $input->getOption('timeout');
-        $redirects = $input->getOption('follow-redirects');
-        $summary   = array();
-        $total     = count($crawler);
-        $progress  = new ProgressBar($output, $total);
+        $crawler  = $this->getContainer()->get('zenstruck_cache.crawler');
+        $summary  = array();
+        $total    = count($crawler);
+        $progress = new ProgressBar($output, $total);
 
         if (0 === $total) {
             throw new \RuntimeException('No URL providers registered.');
@@ -66,7 +59,7 @@ class HttpCacheWarmupCommand extends ContainerAwareCommand
             ++$summary[$status];
         };
 
-        $crawler->crawl($redirects, $timeout, $callback);
+        $crawler->crawl($callback);
 
         $progress->finish();
         $output->writeln("\n");

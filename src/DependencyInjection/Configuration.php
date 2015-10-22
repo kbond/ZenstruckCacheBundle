@@ -17,8 +17,13 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('client')
-                    ->info('Either a class or a service that implements Zenstruck\CacheBundle\Http\Client.')
+                ->scalarNode('http_adapter')
+                    ->info('Either a class or a service that implements Http\Adapter\HttpAdapter.')
+                    ->isRequired()
+                    ->defaultNull()
+                ->end()
+                ->scalarNode('message_factory')
+                    ->info('Either a class or a service that implements Http\Message\MessageFactory.')
                     ->isRequired()
                     ->defaultNull()
                 ->end()

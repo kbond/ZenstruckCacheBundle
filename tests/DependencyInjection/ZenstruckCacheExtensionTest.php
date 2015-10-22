@@ -2,50 +2,69 @@
 
 namespace Zenstruck\RedirectBundle\Tests\DependencyInjection;
 
+use Http\Adapter\HttpAdapter;
+use Http\Message\MessageFactory;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
+use Psr\Http\Message\RequestInterface;
 use Zenstruck\CacheBundle\DependencyInjection\ZenstruckCacheExtension;
-use Zenstruck\CacheBundle\Http\Client;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
  */
 class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
 {
-    public function testClientAsService()
+    public function testAdapterAndFactoryAsService()
     {
-        $this->load(array('client' => 'foo'));
+        $this->load(array('http_adapter' => 'foo', 'message_factory' => 'bar'));
         $this->compile();
 
         $this->assertContainerBuilderHasService('zenstruck_cache.crawler');
         $this->assertContainerBuilderNotHasService('zenstruck_cache.sitemap_provider');
-        $this->assertContainerBuilderHasAlias('zenstruck_cache.client', 'foo');
+        $this->assertContainerBuilderHasAlias('zenstruck_cache.http_adapter', 'foo');
+        $this->assertContainerBuilderHasAlias('zenstruck_cache.message_factory', 'bar');
     }
 
-    public function testClientAsClass()
+    public function testAdapterAndFactoryAsClass()
     {
-        $this->load(array('client' => 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureValidClient'));
+        $this->load(array(
+            'http_adapter'    => 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureValidHttpAdapter',
+            'message_factory' => 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureValidMessageFactory',
+        ));
         $this->compile();
 
         $this->assertContainerBuilderHasService('zenstruck_cache.crawler');
         $this->assertContainerBuilderNotHasService('zenstruck_cache.sitemap_provider');
-        $this->assertContainerBuilderHasService('zenstruck_cache.client', 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureValidClient');
+        $this->assertContainerBuilderHasService('zenstruck_cache.http_adapter', 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureValidHttpAdapter');
+        $this->assertContainerBuilderHasService('zenstruck_cache.message_factory', 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureValidMessageFactory');
     }
 
     /**
-     * @dataProvider invalidClientClassProvider
+     * @dataProvider invalidHttpAdapterClassProvider
      */
-    public function testInvalidClientClass($class, $expectedExceptionMessage)
+    public function testInvalidHttpAdapterClass($class, $expectedExceptionMessage)
     {
         $this->setExpectedException('\Symfony\Component\Config\Definition\Exception\InvalidConfigurationException', $expectedExceptionMessage);
 
-        $this->load(array('client' => $class));
+        $this->load(array('http_adapter' => $class, 'message_factory' => 'foo'));
+        $this->compile();
+    }
+
+    /**
+     * @dataProvider invalidMessageFactoryClassProvider
+     */
+    public function testInvalidMessageFactoryClass($class, $expectedExceptionMessage)
+    {
+        $this->setExpectedException('\Symfony\Component\Config\Definition\Exception\InvalidConfigurationException', $expectedExceptionMessage);
+
+        $this->load(array('http_adapter' => 'foo', 'message_factory' => $class));
         $this->compile();
     }
 
     public function testWithSitemapProviderHosts()
     {
         $this->load(array(
-            'client'           => 'foo',
+            'http_adapter'     => 'foo',
+            'message_factory'  => 'bar',
             'sitemap_provider' => array('hosts' => array('http://www.example.com')),
         ));
         $this->compile();
@@ -59,26 +78,45 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
     public function testWithEmptySitemapProviderHosts()
     {
         $this->load(array(
-            'client'           => 'foo',
+            'http_adapter'     => 'foo',
+            'message_factory'  => 'bar',
             'sitemap_provider' => array('hosts' => array()),
         ));
         $this->compile();
     }
 
-    public function invalidClientClassProvider()
+    public function invalidHttpAdapterClassProvider()
     {
         return array(
             array(
-                'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidClient1',
-                'Client class must implement "Zenstruck\CacheBundle\Http\Client".',
+                'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidHttpAdapter1',
+                'HttpAdapter class must implement "Http\Adapter\HttpAdapter".',
             ),
             array(
-                'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidClient2',
-                'Client class must not have required constructor arguments.',
+                'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidHttpAdapter2',
+                'HttpAdapter class must not have required constructor arguments.',
             ),
             array(
-                'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidClient3',
-                'Client class must not be abstract.',
+                'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidHttpAdapter3',
+                'HttpAdapter class must not be abstract.',
+            ),
+        );
+    }
+
+    public function invalidMessageFactoryClassProvider()
+    {
+        return array(
+            array(
+                'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidMessageFactory1',
+                'MessageFactory class must implement "Http\Message\MessageFactory".',
+            ),
+            array(
+                'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidMessageFactory2',
+                'MessageFactory class must not have required constructor arguments.',
+            ),
+            array(
+                'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidMessageFactory3',
+                'MessageFactory class must not be abstract.',
             ),
         );
     }
@@ -92,28 +130,98 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
     }
 }
 
-class FixtureInvalidClient1
+class FixtureValidHttpAdapter implements HttpAdapter
+{
+    public function sendRequest(RequestInterface $request, array $options = [])
+    {
+    }
+
+    public function sendRequests(array $requests, array $options = [])
+    {
+    }
+
+    public function getName()
+    {
+    }
+}
+
+class FixtureInvalidHttpAdapter1
 {
 }
 
-class FixtureInvalidClient2 implements Client
+class FixtureInvalidHttpAdapter2 implements HttpAdapter
 {
     public function __construct($dependency)
     {
     }
 
-    public function fetch($url, $followRedirects = false, $timeout = 10)
+    public function sendRequest(RequestInterface $request, array $options = [])
+    {
+    }
+
+    public function sendRequests(array $requests, array $options = [])
+    {
+    }
+
+    public function getName()
     {
     }
 }
 
-abstract class FixtureInvalidClient3 implements Client
+abstract class FixtureInvalidHttpAdapter3 implements HttpAdapter
 {
 }
 
-class FixtureValidClient implements Client
+class FixtureValidMessageFactory implements MessageFactory
 {
-    public function fetch($url, $followRedirects = false, $timeout = 10)
+    public function createRequest(
+        $method,
+        $uri,
+        $protocolVersion = '1.1',
+        array $headers = [],
+        $body = null
+    ) {
+    }
+
+    public function createResponse(
+        $statusCode = 200,
+        $reasonPhrase = null,
+        $protocolVersion = '1.1',
+        array $headers = [],
+        $body = null
+    ) {
+    }
+}
+
+class FixtureInvalidMessageFactory1
+{
+}
+
+class FixtureInvalidMessageFactory2 implements MessageFactory
+{
+    public function __construct($dependency)
     {
     }
+
+    public function createRequest(
+        $method,
+        $uri,
+        $protocolVersion = '1.1',
+        array $headers = [],
+        $body = null
+    ) {
+    }
+
+    public function createResponse(
+        $statusCode = 200,
+        $reasonPhrase = null,
+        $protocolVersion = '1.1',
+        array $headers = [],
+        $body = null
+    ) {
+    }
+}
+
+abstract class FixtureInvalidMessageFactory3 implements MessageFactory
+{
 }

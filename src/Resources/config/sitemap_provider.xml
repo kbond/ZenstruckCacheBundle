@@ -11,7 +11,8 @@
     <services>
         <service id="zenstruck_cache.sitemap_provider" class="%zenstruck_cache.sitemap_provider.class%" public="false">
             <argument>%zenstruck_cache.sitemap_provider.hosts%</argument>
-            <argument type="service" id="zenstruck_cache.client" />
+            <argument type="service" id="zenstruck_cache.http_adapter" />
+            <argument type="service" id="zenstruck_cache.message_factory" />
             <tag name="zenstruck_cache.url_provider" />
         </service>
     </services>

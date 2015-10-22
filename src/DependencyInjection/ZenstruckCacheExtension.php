@@ -22,7 +22,8 @@ class ZenstruckCacheExtension extends ConfigurableExtension
         $loader = new Loader\XmlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.xml');
 
-        $this->configureClient($mergedConfig['client'], $container);
+        $this->configureHttpAdapter($mergedConfig['http_adapter'], $container);
+        $this->configureMessageFactory($mergedConfig['message_factory'], $container);
 
         if ($mergedConfig['sitemap_provider']['enabled']) {
             $container->setParameter('zenstruck_cache.sitemap_provider.hosts', $mergedConfig['sitemap_provider']['hosts']);
@@ -31,34 +32,66 @@ class ZenstruckCacheExtension extends ConfigurableExtension
     }
 
     /**
-     * @param string           $client
+     * @param string           $httpAdapter
      * @param ContainerBuilder $container
      */
-    private function configureClient($client, ContainerBuilder $container)
+    private function configureHttpAdapter($httpAdapter, ContainerBuilder $container)
     {
-        if (!class_exists($client)) {
+        if (!class_exists($httpAdapter)) {
             // is a service
-            $container->setAlias('zenstruck_cache.client', $client);
+            $container->setAlias('zenstruck_cache.http_adapter', $httpAdapter);
 
             return;
         }
 
-        $r = new \ReflectionClass($client);
+        $r = new \ReflectionClass($httpAdapter);
 
-        if (!$r->implementsInterface('Zenstruck\CacheBundle\Http\Client')) {
-            throw new InvalidConfigurationException('Client class must implement "Zenstruck\CacheBundle\Http\Client".');
+        if (!$r->implementsInterface('Http\Adapter\HttpAdapter')) {
+            throw new InvalidConfigurationException('HttpAdapter class must implement "Http\Adapter\HttpAdapter".');
         }
 
         if ($r->isAbstract()) {
-            throw new InvalidConfigurationException('Client class must not be abstract.');
+            throw new InvalidConfigurationException('HttpAdapter class must not be abstract.');
         }
 
         if (null !== $r->getConstructor() && 0 !== $r->getConstructor()->getNumberOfRequiredParameters()) {
-            throw new InvalidConfigurationException('Client class must not have required constructor arguments.');
+            throw new InvalidConfigurationException('HttpAdapter class must not have required constructor arguments.');
         }
 
-        $client = new Definition($client);
-        $client->setPublic(false);
-        $container->setDefinition('zenstruck_cache.client', $client);
+        $httpAdapter = new Definition($httpAdapter);
+        $httpAdapter->setPublic(false);
+        $container->setDefinition('zenstruck_cache.http_adapter', $httpAdapter);
+    }
+
+    /**
+     * @param string           $messageFactory
+     * @param ContainerBuilder $container
+     */
+    private function configureMessageFactory($messageFactory, ContainerBuilder $container)
+    {
+        if (!class_exists($messageFactory)) {
+            // is a service
+            $container->setAlias('zenstruck_cache.message_factory', $messageFactory);
+
+            return;
+        }
+
+        $r = new \ReflectionClass($messageFactory);
+
+        if (!$r->implementsInterface('Http\Message\MessageFactory')) {
+            throw new InvalidConfigurationException('MessageFactory class must implement "Http\Message\MessageFactory".');
+        }
+
+        if ($r->isAbstract()) {
+            throw new InvalidConfigurationException('MessageFactory class must not be abstract.');
+        }
+
+        if (null !== $r->getConstructor() && 0 !== $r->getConstructor()->getNumberOfRequiredParameters()) {
+            throw new InvalidConfigurationException('MessageFactory class must not have required constructor arguments.');
+        }
+
+        $messageFactory = new Definition($messageFactory);
+        $messageFactory->setPublic(false);
+        $container->setDefinition('zenstruck_cache.message_factory', $messageFactory);
     }
 }

@@ -2,8 +2,9 @@
 
 namespace Zenstruck\CacheBundle\Url;
 
+use Http\Adapter\HttpAdapter;
+use Http\Message\MessageFactory;
 use Symfony\Component\DomCrawler\Crawler as DomCrawler;
-use Zenstruck\CacheBundle\Http\Client;
 
 /**
  * @author Kevin Bond <kevinbond@gmail.com>
@@ -11,21 +12,24 @@ use Zenstruck\CacheBundle\Http\Client;
 class SitemapUrlProvider implements UrlProvider
 {
     private $hosts;
-    private $client;
+    private $httpAdapter;
+    private $messageFactory;
     private $urls;
 
     /**
-     * @param array  $hosts
-     * @param Client $client
+     * @param array          $hosts
+     * @param HttpAdapter    $httpAdapter
+     * @param MessageFactory $messageFactory
      */
-    public function __construct(array $hosts, Client $client)
+    public function __construct(array $hosts, HttpAdapter $httpAdapter, MessageFactory $messageFactory)
     {
         if (!class_exists('Symfony\\Component\\DomCrawler\\Crawler') || !class_exists('Symfony\\Component\\CssSelector\\CssSelector')) {
             throw new \RuntimeException('symfony/dom-crawler and symfony/css-selector must be installed to use SitemapUrlProvider.');
         }
 
-        $this->hosts  = $hosts;
-        $this->client = $client;
+        $this->hosts          = $hosts;
+        $this->httpAdapter    = $httpAdapter;
+        $this->messageFactory = $messageFactory;
     }
 
     /**
@@ -95,7 +99,7 @@ class SitemapUrlProvider implements UrlProvider
      */
     private function getSitemapEntries($url)
     {
-        $response = $this->client->fetch($url);
+        $response = $this->httpAdapter->sendRequest($this->messageFactory->createRequest('GET', $url));
 
         if (200 !== $response->getStatusCode()) {
             return array();
