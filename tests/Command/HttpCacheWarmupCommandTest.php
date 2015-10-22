@@ -47,7 +47,7 @@ class HttpCacheWarmupCommandTest extends \PHPUnit_Framework_TestCase
         $application = new Application();
         $application->add($this->createCommand($crawler));
 
-        $command = $application->find('zenstruck:http-cache:warmup');
+        $command       = $application->find('zenstruck:http-cache:warmup');
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
 
@@ -73,7 +73,7 @@ class HttpCacheWarmupCommandTest extends \PHPUnit_Framework_TestCase
         $application = new Application();
         $application->add($this->createCommand($crawler));
 
-        $command = $application->find('zenstruck:http-cache:warmup');
+        $command       = $application->find('zenstruck:http-cache:warmup');
         $commandTester = new CommandTester($command);
         $commandTester->execute(array('command' => $command->getName()));
     }

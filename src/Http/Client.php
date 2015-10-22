@@ -10,7 +10,7 @@ use Psr\Http\Message\ResponseInterface;
 interface Client
 {
     /**
-     * Fetches a response for a single URL
+     * Fetches a response for a single URL.
      *
      * @param string $url
      * @param bool   $followRedirects

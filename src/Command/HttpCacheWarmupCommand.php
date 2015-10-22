@@ -63,7 +63,7 @@ class HttpCacheWarmupCommand extends ContainerAwareCommand
                 return;
             }
 
-            $summary[$status]++;
+            ++$summary[$status];
         };
 
         $crawler->crawl($redirects, $timeout, $callback);
@@ -73,7 +73,7 @@ class HttpCacheWarmupCommand extends ContainerAwareCommand
 
         ksort($summary);
 
-        $output->writeln("<comment>Summary:</comment>");
+        $output->writeln('<comment>Summary:</comment>');
 
         $table = new Table($output);
 

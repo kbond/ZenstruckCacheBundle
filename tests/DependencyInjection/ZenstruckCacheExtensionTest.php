@@ -46,7 +46,7 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
     {
         $this->load(array(
             'client'           => 'foo',
-            'sitemap_provider' => array('hosts' => array('http://www.example.com'))
+            'sitemap_provider' => array('hosts' => array('http://www.example.com')),
         ));
         $this->compile();
 
@@ -60,7 +60,7 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
     {
         $this->load(array(
             'client'           => 'foo',
-            'sitemap_provider' => array('hosts' => array())
+            'sitemap_provider' => array('hosts' => array()),
         ));
         $this->compile();
     }
@@ -70,15 +70,15 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
         return array(
             array(
                 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidClient1',
-                'Client class must implement "Zenstruck\CacheBundle\Http\Client".'
+                'Client class must implement "Zenstruck\CacheBundle\Http\Client".',
             ),
             array(
                 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidClient2',
-                'Client class must not have required constructor arguments.'
+                'Client class must not have required constructor arguments.',
             ),
             array(
                 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidClient3',
-                'Client class must not be abstract.'
+                'Client class must not be abstract.',
             ),
         );
     }
@@ -92,17 +92,28 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
     }
 }
 
-class FixtureInvalidClient1 {}
+class FixtureInvalidClient1
+{
+}
 
 class FixtureInvalidClient2 implements Client
 {
-    public function __construct($dependency) {}
-    public function fetch($url, $followRedirects = false, $timeout = 10) {}
+    public function __construct($dependency)
+    {
+    }
+
+    public function fetch($url, $followRedirects = false, $timeout = 10)
+    {
+    }
 }
 
-abstract class FixtureInvalidClient3 implements Client {}
+abstract class FixtureInvalidClient3 implements Client
+{
+}
 
 class FixtureValidClient implements Client
 {
-    public function fetch($url, $followRedirects = false, $timeout = 10) {}
+    public function fetch($url, $followRedirects = false, $timeout = 10)
+    {
+    }
 }

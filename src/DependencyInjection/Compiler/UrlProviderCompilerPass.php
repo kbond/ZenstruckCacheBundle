@@ -20,7 +20,7 @@ class UrlProviderCompilerPass implements CompilerPassInterface
             return;
         }
 
-        $definition = $container->getDefinition('zenstruck_cache.crawler');
+        $definition     = $container->getDefinition('zenstruck_cache.crawler');
         $taggedServices = $container->findTaggedServiceIds('zenstruck_cache.url_provider');
 
         foreach ($taggedServices as $id => $attributes) {
