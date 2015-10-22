@@ -13,7 +13,7 @@
     ],
     "require": {
         "symfony/framework-bundle": "~2.3",
-        "symfony/console": "~2.3",
+        "symfony/console": "^2.4.3",
         "php-http/adapter": "~0.1",
         "php-http/message-factory": "~0.1",
         "php-http/discovery": "~0.1"
