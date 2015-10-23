@@ -13,6 +13,58 @@ use Zenstruck\CacheBundle\DependencyInjection\ZenstruckCacheExtension;
  */
 class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
 {
+    public function testAutoDiscoverHttpAdapter()
+    {
+        if (!class_exists('Http\Adapter\Guzzle5HttpAdapter')) {
+            $this->markTestSkipped('Skipped if Guzzle5HttpAdapter is not available.');
+        }
+
+        $this->load(['message_factory' => 'bar']);
+        $this->compile();
+
+        $this->assertContainerBuilderHasService('zenstruck_cache.http_adapter', 'Http\Adapter\Guzzle5HttpAdapter');
+    }
+
+    public function testAutoDiscoverMessageFactory()
+    {
+        if (!class_exists('GuzzleHttp\Psr7\Request')) {
+            $this->markTestSkipped('Skipped if GuzzleHttp\Psr7\Request is not available.');
+        }
+
+        $this->load(['http_adapter' => 'foo']);
+        $this->compile();
+
+        $this->assertContainerBuilderHasService('zenstruck_cache.message_factory', 'Http\Discovery\MessageFactory\GuzzleFactory');
+    }
+
+    /**
+     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage A HttpAdapter was not found, please define one in your configuration.
+     */
+    public function testAutoDiscoverHttpAdapterFail()
+    {
+        if (class_exists('Http\Adapter\Guzzle5HttpAdapter')) {
+            $this->markTestSkipped('Skipped if Guzzle5HttpAdapter is available.');
+        }
+
+        $this->load(['message_factory' => 'bar']);
+        $this->compile();
+    }
+
+    /**
+     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage A MessageFactory was not found, please define one in your configuration.
+     */
+    public function testAutoDiscoverMessageFactoryFail()
+    {
+        if (class_exists('GuzzleHttp\Psr7\Request')) {
+            $this->markTestSkipped('Skipped if GuzzleHttp\Psr7\Request is available.');
+        }
+
+        $this->load(['http_adapter' => 'foo']);
+        $this->compile();
+    }
+
     public function testAdapterAndFactoryAsService()
     {
         $this->load(['http_adapter' => 'foo', 'message_factory' => 'bar']);

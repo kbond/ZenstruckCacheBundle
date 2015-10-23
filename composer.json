@@ -22,7 +22,9 @@
         "symfony/dom-crawler": "~2.3",
         "symfony/css-selector": "~2.3",
         "phpunit/phpunit": "~4.0",
-        "matthiasnoback/symfony-dependency-injection-test": "~0.4"
+        "matthiasnoback/symfony-dependency-injection-test": "~0.4",
+        "php-http/guzzle5-adapter": "^0.1.0",
+        "guzzlehttp/psr7": "~1.0"
     },
     "autoload": {
         "psr-4": { "Zenstruck\\CacheBundle\\": "src/" }
