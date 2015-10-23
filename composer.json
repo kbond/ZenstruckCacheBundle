@@ -33,7 +33,10 @@
         "psr-4": { "Zenstruck\\CacheBundle\\Tests\\": "tests/" }
     },
     "suggest": {
-        "dpn/xml-sitemap-bundle": "Create a sitemap with Symfony"
+        "dpn/xml-sitemap-bundle": "Create a sitemap with Symfony",
+        "guzzlehttp/psr7": "To use and auto discover GuzzleMessageFactory",
+        "php-http/guzzle5-adapter": "To use and auto discover Guzzle5HttpAdapter",
+        "php-http/guzzle6-adapter": "To use and auto discover Guzzle6HttpAdapter"
     },
     "extra": {
         "branch-alias": {
