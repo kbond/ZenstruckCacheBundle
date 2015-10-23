@@ -7,7 +7,10 @@
 [![License](http://img.shields.io/packagist/l/zenstruck/cache-bundle.svg?style=flat)](https://packagist.org/packages/zenstruck/cache-bundle)
 
 Provides a httpcache warmup command for Symfony2. The command simply executes a `GET` request on a list of urls.
-One or more url providers must be registered.
+One or more url providers must be registered. This bundle requires an implementation of
+[php-http/adapter](https://packagist.org/packages/php-http/adapter) and
+[php-http/message-factory](https://packagist.org/packages/php-http/message-factory). The bundle will try and
+auto-discover these if not configured directly.
 
 ## Installation
 
@@ -30,6 +33,34 @@ One or more url providers must be registered.
         );
         // ...
     }
+    ```
+
+## Configuration
+
+An `http_adapter` (class or service implementing `Http\Adapter\HttpAdapter`) and `message_factory`
+(class or service implementing `Http\Message\MessageFactory`) must be configured.
+
+```yaml
+zenstruck_cache:
+    http_adapter:    Acme\MyHttpAdapter    # or a service (acme.my_http_adapter)
+    message_factory: Acme\MyMessageFactory # or a service (acme.my_message_factory)
+```
+
+If left blank, the bundle will try and auto-discover these classes. The following HTTP adapters and
+are message factories are currently auto-discoverable:
+
+* [guzzle6-adapter](https://packagist.org/packages/php-http/guzzle6-adapter) (Provides HttpAdapter
+  and allows discovery of MessageFactory)
+
+    ```
+    composer require php-http/guzzle6-adapter
+    ```
+
+* [guzzle5-adapter](https://packagist.org/packages/php-http/guzzle5-adapter) (Provides HttpAdapter)
+  and [guzzlehttp/psr7](https://packagist.org/packages/guzzlehttp/psr7) (allows discovery of MessageFactory)
+
+    ```
+    composer require php-http/guzzle5-adapter guzzlephp/psr7
     ```
 
 ## HttpCache Warmup Command
@@ -71,10 +102,10 @@ zenstruck_cache:
 
 ## Add a Custom URL Provider
 
-1. Create a class that implements `Zenstruck\CacheBundle\UrlProvider\UrlProvider`:
+1. Create a class that implements `Zenstruck\CacheBundle\Url\UrlProvider`:
 
     ```php
-    use Zenstruck\CacheBundle\UrlProvider\UrlProvider;
+    use Zenstruck\CacheBundle\Url\UrlProvider;
 
     namespace Acme;
 
@@ -109,6 +140,12 @@ zenstruck_cache:
 
 ```yaml
 zenstruck_cache:
+    # Either a class or a service that implements Http\Adapter\HttpAdapter. Leave blank to attempt auto discovery.
+    http_adapter:             ~
+
+    # Either a class or a service that implements Http\Message\MessageFactory. Leave blank to attempt auto discovery.
+    message_factory:          ~
+
     sitemap_provider:
         enabled:              false
         hosts:                []
