@@ -3,6 +3,7 @@
 [![Build Status](http://img.shields.io/travis/kbond/ZenstruckCacheBundle.svg?style=flat-square)](https://travis-ci.org/kbond/ZenstruckCacheBundle)
 [![Scrutinizer Code Quality](http://img.shields.io/scrutinizer/g/kbond/ZenstruckCacheBundle.svg?style=flat-square)](https://scrutinizer-ci.com/g/kbond/ZenstruckCacheBundle/)
 [![Code Coverage](http://img.shields.io/scrutinizer/coverage/g/kbond/ZenstruckCacheBundle.svg?style=flat-square)](https://scrutinizer-ci.com/g/kbond/ZenstruckCacheBundle/)
+[![StyleCI](https://styleci.io/repos/7914882/shield)](https://styleci.io/repos/7914882)
 [![Latest Stable Version](http://img.shields.io/packagist/v/zenstruck/cache-bundle.svg?style=flat-square)](https://packagist.org/packages/zenstruck/cache-bundle)
 [![License](http://img.shields.io/packagist/l/zenstruck/cache-bundle.svg?style=flat-square)](https://packagist.org/packages/zenstruck/cache-bundle)
 
