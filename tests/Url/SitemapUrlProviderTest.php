@@ -15,7 +15,7 @@ class SitemapUrlProviderTest extends TestCase
      */
     public function testGetUrls(array $responses, $urlCount, array $urls)
     {
-        $httpAdapter    = $this->mockHttpAdapter();
+        $httpAdapter = $this->mockHttpAdapter();
         $messageFactory = $this->mockMessageFactory();
 
         foreach ($responses as $key => $response) {

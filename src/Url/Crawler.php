@@ -26,10 +26,10 @@ class Crawler implements \Countable
      */
     public function __construct(HttpAdapter $httpAdapter, MessageFactory $messageFactory, LoggerInterface $logger = null, array $urlProviders = [])
     {
-        $this->httpAdapter    = $httpAdapter;
+        $this->httpAdapter = $httpAdapter;
         $this->messageFactory = $messageFactory;
-        $this->logger         = $logger;
-        $this->urlProviders   = $urlProviders;
+        $this->logger = $logger;
+        $this->urlProviders = $urlProviders;
     }
 
     /**

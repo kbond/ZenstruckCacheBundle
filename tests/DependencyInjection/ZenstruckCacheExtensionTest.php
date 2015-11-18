@@ -79,7 +79,7 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
     public function testAdapterAndFactoryAsClass()
     {
         $this->load([
-            'http_adapter'    => 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureValidHttpAdapter',
+            'http_adapter' => 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureValidHttpAdapter',
             'message_factory' => 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureValidMessageFactory',
         ]);
         $this->compile();
@@ -115,8 +115,8 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
     public function testWithSitemapProviderHosts()
     {
         $this->load([
-            'http_adapter'     => 'foo',
-            'message_factory'  => 'bar',
+            'http_adapter' => 'foo',
+            'message_factory' => 'bar',
             'sitemap_provider' => ['hosts' => ['http://www.example.com']],
         ]);
         $this->compile();
@@ -130,8 +130,8 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
     public function testWithEmptySitemapProviderHosts()
     {
         $this->load([
-            'http_adapter'     => 'foo',
-            'message_factory'  => 'bar',
+            'http_adapter' => 'foo',
+            'message_factory' => 'bar',
             'sitemap_provider' => ['hosts' => []],
         ]);
         $this->compile();

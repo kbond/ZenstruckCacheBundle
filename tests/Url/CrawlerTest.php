@@ -98,10 +98,10 @@ class CrawlerTest extends TestCase
 
         $crawler = new Crawler($httpAdapter, $messageFactory, $logger, [$provider1, $provider2]);
 
-        $urls     = [];
-        $codes    = [];
+        $urls = [];
+        $codes = [];
         $callback = function (ResponseInterface $response, $url) use (&$urls, &$codes) {
-            $urls[]  = $url;
+            $urls[] = $url;
             $codes[] = $response->getStatusCode();
         };
 

@@ -33,9 +33,9 @@ class HttpCacheWarmupCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         /** @var Crawler $crawler */
-        $crawler  = $this->getContainer()->get('zenstruck_cache.crawler');
-        $summary  = [];
-        $total    = count($crawler);
+        $crawler = $this->getContainer()->get('zenstruck_cache.crawler');
+        $summary = [];
+        $total = count($crawler);
         $progress = new ProgressBar($output, $total);
 
         if (0 === $total) {

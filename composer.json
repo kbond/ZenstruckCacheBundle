@@ -24,7 +24,8 @@
         "phpunit/phpunit": "^4.8.16",
         "matthiasnoback/symfony-dependency-injection-test": "^0.7.4",
         "php-http/guzzle5-adapter": "~0.1.0",
-        "guzzlehttp/psr7": "~1.0"
+        "guzzlehttp/psr7": "~1.0",
+        "sllh/php-cs-fixer-styleci-bridge": "~1.4"
     },
     "autoload": {
         "psr-4": { "Zenstruck\\CacheBundle\\": "src/" }

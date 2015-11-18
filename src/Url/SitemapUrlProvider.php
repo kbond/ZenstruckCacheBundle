@@ -27,8 +27,8 @@ class SitemapUrlProvider implements UrlProvider
             throw new \RuntimeException('symfony/dom-crawler and symfony/css-selector must be installed to use SitemapUrlProvider.');
         }
 
-        $this->hosts          = $hosts;
-        $this->httpAdapter    = $httpAdapter;
+        $this->hosts = $hosts;
+        $this->httpAdapter = $httpAdapter;
         $this->messageFactory = $messageFactory;
     }
 
@@ -105,10 +105,10 @@ class SitemapUrlProvider implements UrlProvider
             return [];
         }
 
-        $body    = (string) $response->getBody();
+        $body = (string) $response->getBody();
         $crawler = new DomCrawler($body);
-        $urls    = [];
-        $filter  = 'loc';
+        $urls = [];
+        $filter = 'loc';
 
         // check for namespaces
         if (preg_match('/xmlns:/', $body)) {

@@ -1,8 +1,3 @@
 preset: symfony
 enabled:
   - short_array_syntax
-  - align_double_arrow
-  - align_equals
-disabled:
-  - unalign_double_arrow
-  - unalign_equals
