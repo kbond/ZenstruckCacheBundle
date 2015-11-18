@@ -69,9 +69,9 @@ Usage:
 
 ## Sitemap Provider
 
-This bundle comes with URL provider that looks at a site's `sitemap.xml` to retrieve a list of urls.  The provider
-first looks for a `sitemap_index.xml` to find a set of sitemap files.  If no index is found, it defaults to using
-`sitemap.xml`.
+This bundle comes with a URL provider that looks at a list of sitemaps to retrieve a list of urls. If a url is
+given without the sitemap or sitemap index, the provider first looks for a `{url}/sitemap_index.xml` to find a
+set of sitemap files.  If no index is found, it defaults to using `{url}/sitemap.xml`.
 
 * See http://www.sitemaps.org/ for information on how to create a sitemap.
 * See [DpnXmlSitemapBundle](https://github.com/bjo3rnf/DpnXmlSitemapBundle) for creating a sitemap with Symfony2.
@@ -81,19 +81,11 @@ To enable the sitemap provider, configure it in your `config.yml`:
 ```yaml
 zenstruck_cache:
     sitemap_provider:
-        hosts:
-            - http://www.example.com
-```
+        sitemaps:
+            - http://example.com/sitemap.xml # detects if sitemap or sitemap index and act accordingly
+            - http://example.com/en/sitemap.xml # same as above
+            - http://www.example.com # trys http://example.com/sitemap_index.xml and http://example.com/sitemap.xml
 
-or for multiple hosts:
-
-```yaml
-zenstruck_cache:
-    sitemap_provider:
-        hosts:
-            - http://www.example.com
-            - http://www.example.ch
-            - http://www.example.net
 ```
 
 ## Add a Custom URL Provider
@@ -144,5 +136,5 @@ zenstruck_cache:
 
     sitemap_provider:
         enabled:              false
-        hosts:                []
+        sitemaps:             []
 ```
