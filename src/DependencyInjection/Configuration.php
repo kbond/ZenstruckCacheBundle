@@ -17,8 +17,8 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('http_adapter')
-                    ->info('Either a class or a service that implements Http\Adapter\HttpAdapter. Leave blank to attempt auto discovery.')
+                ->scalarNode('http_client')
+                    ->info('Either a class or a service that implements Http\Client\HttpClient. Leave blank to attempt auto discovery.')
                     ->defaultNull()
                 ->end()
                 ->scalarNode('message_factory')

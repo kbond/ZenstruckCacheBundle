@@ -2,7 +2,7 @@
 
 namespace Zenstruck\CacheBundle\Url;
 
-use Http\Adapter\HttpAdapter;
+use Http\Client\HttpClient;
 use Http\Message\MessageFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -13,20 +13,20 @@ use Psr\Log\LogLevel;
  */
 class Crawler implements \Countable
 {
-    private $httpAdapter;
+    private $httpClient;
     private $messageFactory;
     private $logger;
     private $urlProviders;
 
     /**
-     * @param HttpAdapter     $httpAdapter
+     * @param HttpClient      $httpClient
      * @param MessageFactory  $messageFactory
      * @param LoggerInterface $logger
      * @param UrlProvider[]   $urlProviders
      */
-    public function __construct(HttpAdapter $httpAdapter, MessageFactory $messageFactory, LoggerInterface $logger = null, array $urlProviders = [])
+    public function __construct(HttpClient $httpClient, MessageFactory $messageFactory, LoggerInterface $logger = null, array $urlProviders = [])
     {
-        $this->httpAdapter = $httpAdapter;
+        $this->httpClient = $httpClient;
         $this->messageFactory = $messageFactory;
         $this->logger = $logger;
         $this->urlProviders = $urlProviders;
@@ -57,14 +57,10 @@ class Crawler implements \Countable
     /**
      * @param callable $callback Response as first argument, calling URL as second
      */
-    public function crawl($callback = null)
+    public function crawl(callable $callback = null)
     {
-        if (null !== $callback && !is_callable($callback)) {
-            throw new \InvalidArgumentException('Valid callback required.');
-        }
-
         foreach ($this->getUrls() as $url) {
-            $response = $this->httpAdapter->sendRequest($this->messageFactory->createRequest('GET', $url));
+            $response = $this->httpClient->sendRequest($this->messageFactory->createRequest('GET', $url));
 
             $this->log($response, $url);
 

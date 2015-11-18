@@ -2,7 +2,7 @@
 
 namespace Zenstruck\CacheBundle\Tests;
 
-use Http\Adapter\HttpAdapter;
+use Http\Client\HttpClient;
 use Http\Message\MessageFactory;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -13,11 +13,11 @@ use Psr\Http\Message\ResponseInterface;
 abstract class TestCase extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject|HttpAdapter
+     * @return \PHPUnit_Framework_MockObject_MockObject|HttpClient
      */
-    public function mockHttpAdapter()
+    public function mockHttpClient()
     {
-        return $this->getMock('Http\Adapter\HttpAdapter');
+        return $this->getMock('Http\Client\HttpClient');
     }
 
     /**

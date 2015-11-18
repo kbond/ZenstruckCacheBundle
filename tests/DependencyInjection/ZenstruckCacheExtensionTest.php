@@ -2,7 +2,7 @@
 
 namespace Zenstruck\RedirectBundle\Tests\DependencyInjection;
 
-use Http\Adapter\HttpAdapter;
+use Http\Client\HttpClient;
 use Http\Message\MessageFactory;
 use Matthias\SymfonyDependencyInjectionTest\PhpUnit\AbstractExtensionTestCase;
 use Psr\Http\Message\RequestInterface;
@@ -13,91 +13,55 @@ use Zenstruck\CacheBundle\DependencyInjection\ZenstruckCacheExtension;
  */
 class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
 {
-    public function testAutoDiscoverHttpAdapter()
+    public function testAutoDiscoverHttpClient()
     {
-        if (!class_exists('Http\Adapter\Guzzle5HttpAdapter')) {
-            $this->markTestSkipped('Skipped if Guzzle5HttpAdapter is not available.');
-        }
-
         $this->load(['message_factory' => 'bar']);
         $this->compile();
 
-        $this->assertContainerBuilderHasService('zenstruck_cache.http_adapter', 'Http\Adapter\Guzzle5HttpAdapter');
+        $this->assertContainerBuilderHasService('zenstruck_cache.http_client', 'Http\Adapter\Guzzle5HttpAdapter');
     }
 
     public function testAutoDiscoverMessageFactory()
     {
-        if (!class_exists('GuzzleHttp\Psr7\Request')) {
-            $this->markTestSkipped('Skipped if GuzzleHttp\Psr7\Request is not available.');
-        }
-
-        $this->load(['http_adapter' => 'foo']);
+        $this->load(['http_client' => 'foo']);
         $this->compile();
 
         $this->assertContainerBuilderHasService('zenstruck_cache.message_factory', 'Http\Discovery\MessageFactory\GuzzleFactory');
     }
 
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     * @expectedExceptionMessage A HttpAdapter was not found, please define one in your configuration.
-     */
-    public function testAutoDiscoverHttpAdapterFail()
+    public function testClientAndFactoryAsService()
     {
-        if (class_exists('Http\Adapter\Guzzle5HttpAdapter')) {
-            $this->markTestSkipped('Skipped if Guzzle5HttpAdapter is available.');
-        }
-
-        $this->load(['message_factory' => 'bar']);
-        $this->compile();
-    }
-
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     * @expectedExceptionMessage A MessageFactory was not found, please define one in your configuration.
-     */
-    public function testAutoDiscoverMessageFactoryFail()
-    {
-        if (class_exists('GuzzleHttp\Psr7\Request')) {
-            $this->markTestSkipped('Skipped if GuzzleHttp\Psr7\Request is available.');
-        }
-
-        $this->load(['http_adapter' => 'foo']);
-        $this->compile();
-    }
-
-    public function testAdapterAndFactoryAsService()
-    {
-        $this->load(['http_adapter' => 'foo', 'message_factory' => 'bar']);
+        $this->load(['http_client' => 'foo', 'message_factory' => 'bar']);
         $this->compile();
 
         $this->assertContainerBuilderHasService('zenstruck_cache.crawler');
         $this->assertContainerBuilderNotHasService('zenstruck_cache.sitemap_provider');
-        $this->assertContainerBuilderHasAlias('zenstruck_cache.http_adapter', 'foo');
+        $this->assertContainerBuilderHasAlias('zenstruck_cache.http_client', 'foo');
         $this->assertContainerBuilderHasAlias('zenstruck_cache.message_factory', 'bar');
     }
 
-    public function testAdapterAndFactoryAsClass()
+    public function testClientAndFactoryAsClass()
     {
         $this->load([
-            'http_adapter' => 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureValidHttpAdapter',
+            'http_client' => 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureValidHttpClient',
             'message_factory' => 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureValidMessageFactory',
         ]);
         $this->compile();
 
         $this->assertContainerBuilderHasService('zenstruck_cache.crawler');
         $this->assertContainerBuilderNotHasService('zenstruck_cache.sitemap_provider');
-        $this->assertContainerBuilderHasService('zenstruck_cache.http_adapter', 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureValidHttpAdapter');
+        $this->assertContainerBuilderHasService('zenstruck_cache.http_client', 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureValidHttpClient');
         $this->assertContainerBuilderHasService('zenstruck_cache.message_factory', 'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureValidMessageFactory');
     }
 
     /**
-     * @dataProvider invalidHttpAdapterClassProvider
+     * @dataProvider invalidHttpClientClassProvider
      */
-    public function testInvalidHttpAdapterClass($class, $expectedExceptionMessage)
+    public function testInvalidHttpClientClass($class, $expectedExceptionMessage)
     {
         $this->setExpectedException('\Symfony\Component\Config\Definition\Exception\InvalidConfigurationException', $expectedExceptionMessage);
 
-        $this->load(['http_adapter' => $class, 'message_factory' => 'foo']);
+        $this->load(['http_client' => $class, 'message_factory' => 'foo']);
         $this->compile();
     }
 
@@ -108,14 +72,14 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
     {
         $this->setExpectedException('\Symfony\Component\Config\Definition\Exception\InvalidConfigurationException', $expectedExceptionMessage);
 
-        $this->load(['http_adapter' => 'foo', 'message_factory' => $class]);
+        $this->load(['http_client' => 'foo', 'message_factory' => $class]);
         $this->compile();
     }
 
     public function testWithSitemapProviderSitemaps()
     {
         $this->load([
-            'http_adapter' => 'foo',
+            'http_client' => 'foo',
             'message_factory' => 'bar',
             'sitemap_provider' => ['sitemaps' => ['http://www.example.com']],
         ]);
@@ -130,27 +94,27 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
     public function testWithEmptySitemapProviderSitemaps()
     {
         $this->load([
-            'http_adapter' => 'foo',
+            'http_client' => 'foo',
             'message_factory' => 'bar',
             'sitemap_provider' => ['sitemaps' => []],
         ]);
         $this->compile();
     }
 
-    public function invalidHttpAdapterClassProvider()
+    public function invalidHttpClientClassProvider()
     {
         return [
             [
-                'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidHttpAdapter1',
-                'HttpAdapter class must implement "Http\Adapter\HttpAdapter".',
+                'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidHttpClient1',
+                'HttpClient class must implement "Http\Client\HttpClient".',
             ],
             [
-                'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidHttpAdapter2',
-                'HttpAdapter class must not have required constructor arguments.',
+                'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidHttpClient2',
+                'HttpClient class must not have required constructor arguments.',
             ],
             [
-                'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidHttpAdapter3',
-                'HttpAdapter class must not be abstract.',
+                'Zenstruck\RedirectBundle\Tests\DependencyInjection\FixtureInvalidHttpClient3',
+                'HttpClient class must not be abstract.',
             ],
         ];
     }
@@ -182,7 +146,7 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
     }
 }
 
-class FixtureValidHttpAdapter implements HttpAdapter
+class FixtureValidHttpClient implements HttpClient
 {
     public function sendRequest(RequestInterface $request, array $options = [])
     {
@@ -197,11 +161,11 @@ class FixtureValidHttpAdapter implements HttpAdapter
     }
 }
 
-class FixtureInvalidHttpAdapter1
+class FixtureInvalidHttpClient1
 {
 }
 
-class FixtureInvalidHttpAdapter2 implements HttpAdapter
+class FixtureInvalidHttpClient2 implements HttpClient
 {
     public function __construct($dependency)
     {
@@ -220,7 +184,7 @@ class FixtureInvalidHttpAdapter2 implements HttpAdapter
     }
 }
 
-abstract class FixtureInvalidHttpAdapter3 implements HttpAdapter
+abstract class FixtureInvalidHttpClient3 implements HttpClient
 {
 }
 
@@ -229,18 +193,18 @@ class FixtureValidMessageFactory implements MessageFactory
     public function createRequest(
         $method,
         $uri,
-        $protocolVersion = '1.1',
         array $headers = [],
-        $body = null
+        $body = null,
+        $protocolVersion = '1.1'
     ) {
     }
 
     public function createResponse(
         $statusCode = 200,
         $reasonPhrase = null,
-        $protocolVersion = '1.1',
         array $headers = [],
-        $body = null
+        $body = null,
+        $protocolVersion = '1.1'
     ) {
     }
 }
@@ -258,18 +222,18 @@ class FixtureInvalidMessageFactory2 implements MessageFactory
     public function createRequest(
         $method,
         $uri,
-        $protocolVersion = '1.1',
         array $headers = [],
-        $body = null
+        $body = null,
+        $protocolVersion = '1.1'
     ) {
     }
 
     public function createResponse(
         $statusCode = 200,
         $reasonPhrase = null,
-        $protocolVersion = '1.1',
         array $headers = [],
-        $body = null
+        $body = null,
+        $protocolVersion = '1.1'
     ) {
     }
 }
