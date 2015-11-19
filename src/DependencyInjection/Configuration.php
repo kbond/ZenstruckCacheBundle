@@ -28,7 +28,7 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('sitemap_provider')
                     ->canBeEnabled()
                     ->children()
-                        ->arrayNode('hosts')
+                        ->arrayNode('sitemaps')
                             ->requiresAtLeastOneElement()
                             ->prototype('scalar')->end()
                         ->end()

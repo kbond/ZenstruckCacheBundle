@@ -11,23 +11,23 @@ use Symfony\Component\DomCrawler\Crawler as DomCrawler;
  */
 class SitemapUrlProvider implements UrlProvider
 {
-    private $hosts;
+    private $sitemaps;
     private $httpAdapter;
     private $messageFactory;
     private $urls;
 
     /**
-     * @param array          $hosts
+     * @param array          $sitemaps
      * @param HttpAdapter    $httpAdapter
      * @param MessageFactory $messageFactory
      */
-    public function __construct(array $hosts, HttpAdapter $httpAdapter, MessageFactory $messageFactory)
+    public function __construct(array $sitemaps, HttpAdapter $httpAdapter, MessageFactory $messageFactory)
     {
         if (!class_exists('Symfony\\Component\\DomCrawler\\Crawler')) {
             throw new \RuntimeException('symfony/dom-crawler and symfony/css-selector must be installed to use SitemapUrlProvider.');
         }
 
-        $this->hosts = $hosts;
+        $this->sitemaps = $sitemaps;
         $this->httpAdapter = $httpAdapter;
         $this->messageFactory = $messageFactory;
     }
@@ -51,11 +51,27 @@ class SitemapUrlProvider implements UrlProvider
 
         $urls = [];
 
-        foreach ($this->hosts as $host) {
-            $urls = array_merge($urls, $this->getUrlsForHost($host));
+        foreach ($this->sitemaps as $sitemap) {
+            $urls = array_merge($urls, $this->getUrlsForSitemapUrl($sitemap));
         }
 
         return $this->urls = $urls;
+    }
+
+    /**
+     * @param string $sitemap
+     *
+     * @return array
+     */
+    private function getUrlsForSitemapUrl($sitemap)
+    {
+        $path = parse_url($sitemap, PHP_URL_PATH);
+
+        if (null === $path || '/' === trim($path)) {
+            return $this->tryDefaultSitemapUrls($sitemap);
+        }
+
+        return $this->parseUrl($sitemap);
     }
 
     /**
@@ -63,22 +79,78 @@ class SitemapUrlProvider implements UrlProvider
      *
      * @return array
      */
-    private function getUrlsForHost($host)
+    private function tryDefaultSitemapUrls($host)
     {
-        $sitemaps = $this->getSitemapEntries($this->addPathToHost('sitemap_index.xml', $host));
+        // try default sitemap_index.xml
+        $urls = $this->parseUrl($this->addPathToHost('sitemap_index.xml', $host));
 
-        if (empty($sitemaps)) {
-            // no index, try sitemap.xml
-            return $this->getSitemapEntries($this->addPathToHost('sitemap.xml', $host));
-        }
-
-        $urls = [];
-
-        foreach ($sitemaps as $sitemap) {
-            $urls = array_merge($urls, $this->getSitemapEntries($sitemap));
+        if (empty($urls)) {
+            // try default sitemap.xml
+            $urls = $this->parseUrl($this->addPathToHost('sitemap.xml', $host));
         }
 
         return $urls;
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return array
+     */
+    private function parseUrl($url)
+    {
+        $response = $this->httpAdapter->sendRequest($this->messageFactory->createRequest('GET', $url));
+
+        if (200 !== $response->getStatusCode()) {
+            return [];
+        }
+
+        $body = (string) $response->getBody();
+
+        if (false !== strpos($body, '<sitemapindex')) {
+            return $this->parseSitemapIndex($body);
+        }
+
+        return $this->getLocEntries($body);
+    }
+
+    /**
+     * @param string $body
+     *
+     * @return array
+     */
+    private function parseSitemapIndex($body)
+    {
+        $urls = [];
+
+        foreach ($this->getLocEntries($body) as $entry) {
+            $urls = array_merge($urls, $this->getUrlsForSitemapUrl($entry));
+        }
+
+        return $urls;
+    }
+
+    /**
+     * @param string $body
+     *
+     * @return array
+     */
+    private function getLocEntries($body)
+    {
+        $crawler = new DomCrawler($body);
+        $entries = [];
+        $filter = 'loc';
+
+        // check for namespaces
+        if (preg_match('/xmlns:/', $body)) {
+            $filter = 'default|loc';
+        }
+
+        foreach ($crawler->filter($filter) as $node) {
+            $entries[] = $node->nodeValue;
+        }
+
+        return $entries;
     }
 
     /**
@@ -90,35 +162,5 @@ class SitemapUrlProvider implements UrlProvider
     private function addPathToHost($path, $host)
     {
         return sprintf('%s/%s', trim($host, '/'), ltrim($path, '/'));
-    }
-
-    /**
-     * @param string $url
-     *
-     * @return array
-     */
-    private function getSitemapEntries($url)
-    {
-        $response = $this->httpAdapter->sendRequest($this->messageFactory->createRequest('GET', $url));
-
-        if (200 !== $response->getStatusCode()) {
-            return [];
-        }
-
-        $body = (string) $response->getBody();
-        $crawler = new DomCrawler($body);
-        $urls = [];
-        $filter = 'loc';
-
-        // check for namespaces
-        if (preg_match('/xmlns:/', $body)) {
-            $filter = 'default|loc';
-        }
-
-        foreach ($crawler->filter($filter) as $node) {
-            $urls[] = $node->nodeValue;
-        }
-
-        return $urls;
     }
 }

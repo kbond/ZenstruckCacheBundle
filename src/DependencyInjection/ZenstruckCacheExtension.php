@@ -29,7 +29,7 @@ class ZenstruckCacheExtension extends ConfigurableExtension
         $this->configureMessageFactory($mergedConfig['message_factory'], $container);
 
         if ($mergedConfig['sitemap_provider']['enabled']) {
-            $container->setParameter('zenstruck_cache.sitemap_provider.hosts', $mergedConfig['sitemap_provider']['hosts']);
+            $container->setParameter('zenstruck_cache.sitemap_provider.sitemaps', $mergedConfig['sitemap_provider']['sitemaps']);
             $loader->load('sitemap_provider.xml');
         }
     }
