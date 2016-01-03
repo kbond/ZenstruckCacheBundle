@@ -29,7 +29,6 @@ cache:
 before_install:
   - composer selfupdate
   - if [ "$SYMFONY_VERSION" != "" ]; then composer require "symfony/symfony:${SYMFONY_VERSION}" --no-update; fi;
-  - if [ "${TRAVIS_PHP_VERSION:0:3}" == "5.4" ]; then composer remove --dev --no-update "php-http/guzzle6-adapter"; fi
 
 install: composer update --prefer-source $COMPOSER_FLAGS
 

@@ -15,6 +15,8 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
 {
     public function testAutoDiscoverHttpClient()
     {
+        $this->markTestIncomplete();
+
         $this->load(['message_factory' => 'bar']);
         $this->compile();
 
@@ -23,6 +25,8 @@ class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
 
     public function testAutoDiscoverMessageFactory()
     {
+        $this->markTestIncomplete();
+
         $this->load(['http_client' => 'foo']);
         $this->compile();
 
