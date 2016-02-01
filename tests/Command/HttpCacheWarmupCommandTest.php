@@ -46,26 +46,26 @@ class HttpCacheWarmupCommandTest extends TestCase
             ->with('GET', 'baz.com')
             ->willReturn($request);
 
-        $httpAdapter = $this->mockHttpAdapter();
-        $httpAdapter
+        $httpClient = $this->mockHttpClient();
+        $httpClient
             ->expects($this->at(0))
             ->method('sendRequest')
             ->with($request)
             ->willReturn($this->mockResponse('', 200));
 
-        $httpAdapter
+        $httpClient
             ->expects($this->at(1))
             ->method('sendRequest')
             ->with($request)
             ->willReturn($this->mockResponse('', 200));
 
-        $httpAdapter
+        $httpClient
             ->expects($this->at(2))
             ->method('sendRequest')
             ->with($request)
             ->willReturn($this->mockResponse('', 404));
 
-        $crawler = new Crawler($httpAdapter, $messageFactory, null, [$provider]);
+        $crawler = new Crawler($httpClient, $messageFactory, null, [$provider]);
 
         $application = new Application();
         $application->add($this->createCommand($crawler));

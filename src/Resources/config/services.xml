@@ -10,7 +10,7 @@
 
     <services>
         <service id="zenstruck_cache.crawler" class="%zenstruck_cache.crawler.class%">
-            <argument type="service" id="zenstruck_cache.http_adapter" />
+            <argument type="service" id="zenstruck_cache.http_client" />
             <argument type="service" id="zenstruck_cache.message_factory" />
             <argument type="service" id="logger" on-invalid="null" />
             <tag name="monolog.logger" channel="httpcache_warmup" />

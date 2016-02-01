@@ -26,7 +26,7 @@ class CrawlerTest extends TestCase
             ->method('count')
             ->willReturn(2);
 
-        $crawler = new Crawler($this->mockHttpAdapter(), $this->mockMessageFactory(), null, [$provider1]);
+        $crawler = new Crawler($this->mockHttpClient(), $this->mockMessageFactory(), null, [$provider1]);
         $crawler->addUrlProvider($provider2);
 
         $this->assertSame(5, $crawler->count());
@@ -55,20 +55,20 @@ class CrawlerTest extends TestCase
             ->with('GET', 'baz.com')
             ->willReturn($request);
 
-        $httpAdapter = $this->mockHttpAdapter();
-        $httpAdapter
+        $httpClient = $this->mockHttpClient();
+        $httpClient
             ->expects($this->at(0))
             ->method('sendRequest')
             ->with($request)
             ->willReturn($this->mockResponse('', 200));
 
-        $httpAdapter
+        $httpClient
             ->expects($this->at(1))
             ->method('sendRequest')
             ->with($request)
             ->willReturn($this->mockResponse('', 200));
 
-        $httpAdapter
+        $httpClient
             ->expects($this->at(2))
             ->method('sendRequest')
             ->with($request)
@@ -96,7 +96,7 @@ class CrawlerTest extends TestCase
                 [LogLevel::NOTICE, '[404] baz.com']
             );
 
-        $crawler = new Crawler($httpAdapter, $messageFactory, $logger, [$provider1, $provider2]);
+        $crawler = new Crawler($httpClient, $messageFactory, $logger, [$provider1, $provider2]);
 
         $urls = [];
         $codes = [];

@@ -15,7 +15,7 @@ class SitemapUrlProviderTest extends TestCase
      */
     public function testGetUrls(array $sitemaps, array $responses, $urlCount, array $urls)
     {
-        $httpAdapter = $this->mockHttpAdapter();
+        $httpClient = $this->mockHttpClient();
         $messageFactory = $this->mockMessageFactory();
 
         foreach ($responses as $key => $response) {
@@ -27,14 +27,14 @@ class SitemapUrlProviderTest extends TestCase
                 ->with('GET', $response[0])
                 ->willReturn($request);
 
-            $httpAdapter
+            $httpClient
                 ->expects($this->at($key))
                 ->method('sendRequest')
                 ->with($request)
                 ->willReturn($response[1]);
         }
 
-        $provider = new SitemapUrlProvider($sitemaps, $httpAdapter, $messageFactory);
+        $provider = new SitemapUrlProvider($sitemaps, $httpClient, $messageFactory);
 
         $this->assertCount($urlCount, $provider->getUrls());
         $this->assertSame($urls, $provider->getUrls());

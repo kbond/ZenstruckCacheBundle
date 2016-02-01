@@ -17,13 +17,13 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('http_adapter')
-                    ->info('Either a class or a service that implements Http\Adapter\HttpAdapter. Leave blank to attempt auto discovery.')
-                    ->defaultNull()
+                ->scalarNode('http_client')
+                    ->info('Either a class or a service that implements Http\Client\HttpClient.')
+                    ->isRequired()
                 ->end()
                 ->scalarNode('message_factory')
-                    ->info('Either a class or a service that implements Http\Message\MessageFactory. Leave blank to attempt auto discovery.')
-                    ->defaultNull()
+                    ->info('Either a class or a service that implements Http\Message\MessageFactory.')
+                    ->isRequired()
                 ->end()
                 ->arrayNode('sitemap_provider')
                     ->canBeEnabled()
