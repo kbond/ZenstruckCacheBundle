@@ -2,9 +2,6 @@
 
 namespace Zenstruck\CacheBundle\DependencyInjection;
 
-use Http\Discovery\HttpClientDiscovery;
-use Http\Discovery\MessageFactoryDiscovery;
-use Http\Discovery\NotFoundException;
 use Symfony\Component\Config\Definition\Exception\InvalidConfigurationException;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -35,13 +32,11 @@ class ZenstruckCacheExtension extends ConfigurableExtension
     }
 
     /**
-     * @param string|null      $httpClient
+     * @param string           $httpClient
      * @param ContainerBuilder $container
      */
     private function configureHttpClient($httpClient, ContainerBuilder $container)
     {
-        $httpClient = $httpClient ?: $this->autoDiscoverHttpClient();
-
         if (!class_exists($httpClient)) {
             // is a service
             $container->setAlias('zenstruck_cache.http_client', $httpClient);
@@ -69,13 +64,11 @@ class ZenstruckCacheExtension extends ConfigurableExtension
     }
 
     /**
-     * @param string|null      $messageFactory
+     * @param string           $messageFactory
      * @param ContainerBuilder $container
      */
     private function configureMessageFactory($messageFactory, ContainerBuilder $container)
     {
-        $messageFactory = $messageFactory ?: $this->autoDiscoverMessageFactory();
-
         if (!class_exists($messageFactory)) {
             // is a service
             $container->setAlias('zenstruck_cache.message_factory', $messageFactory);
@@ -100,29 +93,5 @@ class ZenstruckCacheExtension extends ConfigurableExtension
         $messageFactory = new Definition($messageFactory);
         $messageFactory->setPublic(false);
         $container->setDefinition('zenstruck_cache.message_factory', $messageFactory);
-    }
-
-    /**
-     * @return string
-     */
-    private function autoDiscoverHttpClient()
-    {
-        try {
-            return get_class(HttpClientDiscovery::find());
-        } catch (NotFoundException $e) {
-            throw new InvalidConfigurationException('A HttpClient was not found, please define one in your configuration.', 0, $e);
-        }
-    }
-
-    /**
-     * @return string
-     */
-    private function autoDiscoverMessageFactory()
-    {
-        try {
-            return get_class(MessageFactoryDiscovery::find());
-        } catch (NotFoundException $e) {
-            throw new InvalidConfigurationException('A MessageFactory was not found, please define one in your configuration.', 0, $e);
-        }
     }
 }

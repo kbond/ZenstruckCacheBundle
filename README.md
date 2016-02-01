@@ -10,8 +10,7 @@
 Provides a httpcache warmup command for Symfony2. The command simply executes a `GET` request on a list of urls.
 One or more url providers must be registered. This bundle requires an implementation of
 [php-http/httplug](https://packagist.org/packages/php-http/httplug) and
-[php-http/message-factory](https://packagist.org/packages/php-http/message-factory). The bundle will try and
-auto-discover these if not configured directly.
+[php-http/message-factory](https://packagist.org/packages/php-http/message-factory).
 
 ## Installation
 
@@ -46,20 +45,6 @@ zenstruck_cache:
     http_client:    Acme\MyHttpClient    # or a service (acme.my_http_client)
     message_factory: Acme\MyMessageFactory # or a service (acme.my_message_factory)
 ```
-
-If left blank, the bundle will try and auto-discover these classes. The following HTTP clients and
-message factories are currently auto-discoverable:
-
-* [guzzle6-adapter](https://packagist.org/packages/php-http/guzzle6-adapter) (Provides HttpClient
-and allows discovery of MessageFactory)
-
-        composer require php-http/guzzle6-adapter
-
-
-* [guzzle5-adapter](https://packagist.org/packages/php-http/guzzle5-adapter) (Provides HttpClient)
-and [guzzlehttp/psr7](https://packagist.org/packages/guzzlehttp/psr7) (allows discovery of MessageFactory)
-
-        composer require php-http/guzzle5-adapter guzzlephp/psr7
 
 ## HttpCache Warmup Command
 
@@ -128,11 +113,11 @@ zenstruck_cache:
 
 ```yaml
 zenstruck_cache:
-    # Either a class or a service that implements Http\Client\HttpClient. Leave blank to attempt auto discovery.
-    http_client:             ~
+    # Either a class or a service that implements Http\Client\HttpClient.
+    http_client:              ~ # Required
 
-    # Either a class or a service that implements Http\Message\MessageFactory. Leave blank to attempt auto discovery.
-    message_factory:          ~
+    # Either a class or a service that implements Http\Message\MessageFactory.
+    message_factory:          ~ # Required
 
     sitemap_provider:
         enabled:              false

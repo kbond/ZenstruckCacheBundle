@@ -13,24 +13,24 @@ use Zenstruck\CacheBundle\DependencyInjection\ZenstruckCacheExtension;
  */
 class ZenstruckCacheExtensionTest extends AbstractExtensionTestCase
 {
-    public function testAutoDiscoverHttpClient()
+    /**
+     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage The child node "http_client" at path "zenstruck_cache" must be configured.
+     */
+    public function testThrowsExceptionWhenMissingHttpClient()
     {
-        $this->markTestIncomplete();
-
         $this->load(['message_factory' => 'bar']);
         $this->compile();
-
-        $this->assertContainerBuilderHasService('zenstruck_cache.http_client', 'Http\Adapter\Guzzle5HttpAdapter');
     }
 
-    public function testAutoDiscoverMessageFactory()
+    /**
+     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     * @expectedExceptionMessage The child node "message_factory" at path "zenstruck_cache" must be configured.
+     */
+    public function testThrowsExceptionWhenMissingMessageFactory()
     {
-        $this->markTestIncomplete();
-
         $this->load(['http_client' => 'foo']);
         $this->compile();
-
-        $this->assertContainerBuilderHasService('zenstruck_cache.message_factory', 'Http\Discovery\MessageFactory\GuzzleFactory');
     }
 
     public function testClientAndFactoryAsService()
